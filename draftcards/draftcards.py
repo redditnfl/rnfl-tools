@@ -1,8 +1,11 @@
-from render import Render
-from sheets import GoogleSheetsData
-from pprint import pprint
-from screenshot import Screenshot
+#!/usr/bin/env python
 from pathlib import Path
+from pprint import pprint
+import json
+
+from render import Render
+from screenshot import Screenshot
+from sheets import GoogleSheetsData
 
 def height_from_in(k, v):
     feet, inches = divmod(int(v), 12)
@@ -40,10 +43,17 @@ class DraftCards:
         for player in self.sheet.get_range_dict(self.range_def):
             player = self.massage_values(player)
             print(player['Name'], end='... ')
-            html = self.fn(player).with_suffix('.html')
-            png = self.fn(player).with_suffix('.png')
+            fn = self.fn(player)
+
+            html = fn.with_suffix('.html')
             with html.open('w') as fp:
                 fp.write(self.render.render(self.template, {'p':player}))
+
+            json_file = fn.with_suffix('.json')
+            with json_file.open('w') as fp:
+                json.dump(player, fp)
+
+            png = fn.with_suffix('.png')
             self.sshot.sshot(str(html), str(png))
             html.unlink()
             print("done")
