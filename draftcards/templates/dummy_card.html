@@ -30,12 +30,20 @@
     <body>
         <div id="card">
             <h1>{{ p.Name }}</h1>
-            <h2>{{ p.POS }}</h2>
+            <h2>{{ p.POS|default('??') }}</h2>
             <dl>
                 <dt>Weight</dt>
+                {% if p['Weight (lbs)'] %}
                 <dd>{{ p['Weight (lbs)']|int }} lbs</dd>
+                {% else %}
+                <dd><em>Unknown</em></dd>
+                {% endif %}
                 <dt>Height</dt>
+                {% if p.Height %}
                 <dd>{{ p.Height }}</dd>
+                {% else %}
+                <dd><em>Unknown</em></dd>
+                {% endif %}
                 <dt>40yd time</dt>
                 {% if p['40 Yard'] %}
                 <dd>{{ p['40 Yard']|float|round(2) }} sec</dd>
