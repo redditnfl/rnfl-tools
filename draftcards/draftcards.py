@@ -24,8 +24,8 @@ class DraftCards:
         self.render = Render()
 
     def fn(self, player):
-        safename = player['Name'].replace(" ", "_").replace("'", "_").lower()
-        return str(Path('output') / (safename + ".html"))
+        safename = player['Name'].replace(" ", "_").replace("'", "_").replace('.','_').lower()
+        return Path('output') / (safename + '.dummy')
 
     def massage_values(self, player):
         ret = {}
@@ -40,10 +40,12 @@ class DraftCards:
         for player in self.sheet.get_range_dict(self.range_def):
             player = self.massage_values(player)
             print(player['Name'], end='... ')
-            fn = self.fn(player)
-            with open(fn, 'w') as fp:
+            html = self.fn(player).with_suffix('.html')
+            png = self.fn(player).with_suffix('.png')
+            with html.open('w') as fp:
                 fp.write(self.render.render(self.template, {'p':player}))
-            self.sshot.sshot(fn, '%s.png' % fn)
+            self.sshot.sshot(str(html), str(png))
+            html.unlink()
             print("done")
                 
 
