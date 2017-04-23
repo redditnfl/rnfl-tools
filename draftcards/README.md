@@ -10,9 +10,11 @@ The process goes like this:
 # Setup
 
 1. Setup a Google Sheets client as explained in Step 1 in [Google's Python Quickstart](https://developers.google.com/sheets/api/quickstart/python)
-2. Store client_secret.json next to draftcard.py
-3. `pip install -f requirements.txt`
-4. Install [PhantomJS](http://phantomjs.org/). On Debian Unstable at least, you can simply `sudo apt-get install phantomjs`.
+2. Store the downloaded `client_secret.json` next to `draftcard.py` as `google_client_secret.json`
+3. Register an application with [imgur](http://api.imgur.com/#registerapp)
+4. Store your imgur application credentials in `imgur_client_secret.json` as JSON in the form `{"client_id": "...", "client_secret": "..."}`
+3. Install [PhantomJS](http://phantomjs.org/). On Debian Unstable at least, you can simply `sudo apt-get install phantomjs`.
+4. `pip install -f requirements.txt`
 
 # Running
 
