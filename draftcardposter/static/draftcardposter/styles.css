@@ -1,6 +1,6 @@
 @font-face {
 	font-family: "lickety";
-	src: url(BoldVision-Regular.ttf);
+	src: url(licketysplit.ttf);
 }
 @font-face {
 	font-family: "hanken-bold";
@@ -14,8 +14,6 @@ html,
 body{
 	background: transparent;
 	margin: 0;
-}
-body{
 	height: 820px;
 	width: 1260px;
 }
@@ -38,12 +36,13 @@ body{
 	top: 50%;
 	left: 50%;
 	transform:translate(-50%, -50%);
+	-webkit-transform:translate(-50%, -50%);
 	height: 716px;
 	width: 538px;
 	background: #333;
 }
 .masked{
-  clip-path: url(#mask);
+  -webkit-clip-path: url(#mask);
 }
 .logo{
 	position: absolute;
@@ -51,6 +50,14 @@ body{
 	left: 50%;
 	width: 78px;
 	transform: translateX(-50%);
+	-webkit-transform: translateX(-50%);
+	fill: #fff;
+	z-index: 999;
+}
+.logo svg{
+	display: block;
+	height: 67px;
+	width: 78px;
 	fill: #fff;
 }
 .name-ctn{
@@ -72,17 +79,19 @@ body{
 }
 .first-name{
 	display: block;
-	font-size: 104px;
+	font-size: 84px;
 	line-height: 0;
 	letter-spacing: .01em;
 	transform: skewY(-12deg) skewX(12deg);
+	-webkit-transform: skewY(-12deg) skewX(12deg);
 }
 .last-name{
 	display: block;
 	margin-top: -10px;
-	font-size:164px;
+	font-size:106px;
 	line-height: 202px;
 	transform: skewY(-12deg) skewX(12deg);
+	-webkit-transform: skewY(-12deg) skewX(12deg);
 }
 .pick-number{
   position: absolute;
@@ -101,6 +110,7 @@ body{
 	background-image: url(draft-bg.jpg);
 	background-position: center;
 	background-size: 1400px;
+	-webkit-background-size: 1400px;
 }
 .background-image{
 	position: absolute;
@@ -109,7 +119,6 @@ body{
 	right: 0;
 	bottom: 0;
 	background: red;
-    background-size: cover;
 }
 .pick,
 .position,

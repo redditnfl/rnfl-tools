@@ -3,15 +3,19 @@
 
 {% block content %}
 <h1>/r/NFL Draft card postinator</h1>
-<p class="lead">Some random lol here</p>
+<p class="lead">Look closely before you hit that post button!</p>
 {% if msg %}
 <div class="alert alert-success" role="alert">{{ msg }}</div>
 {% endif %}
-{% if player %}
-{{ player.data.weight_lbs }}
-{{ player }}
-{% endif %}
 <hr />
-Title: Round {{ round }} - Pick {{ pick }}: {{ name }}, {{ position }}, {{ college }} ({{ team.fullname }})
+Title: {{ title }}
+<form action="{% url 'submit-pick' %}" method="POST">
+    {% csrf_token %}
+    <input type="hidden" name="title" value="{{ title }}" />
+    <input type="hidden" name="imageurl" value="{{ imageurl }}" />
+    <button type="submit">Submit!</button>
+</form>
+<hr />
+<img class="img-fluid img-thumbnail" src="{{ imageurl }}" />
 <hr />
 {% endblock %}

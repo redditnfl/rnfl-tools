@@ -1,0 +1,17 @@
+{% extends "draftcardposter/base.html" %}
+{% block title %}Draft card postinator - submitting{% endblock %}
+
+{% block content %}
+<h1>/r/NFL Draft card postinator</h1>
+<p class="lead">Posting draft card!</p>
+{% if msg %}
+<div class="alert alert-success" role="alert">{{ msg }}</div>
+{% endif %}
+{% if imgururl %}
+Imgur: <a href="{{ imgururl }}">{{ imgururl }}</a>
+{% endif %}
+
+{% if submission %}
+Reddit submission: <a href="{{ permalink }}">{{ submission.title }}</a>
+{% endif %}
+{% endblock %}

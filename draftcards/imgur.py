@@ -54,6 +54,15 @@ class Imgur:
             config['title'] = title
         ret = self.client.upload_from_path(path, config, anon=False)
         pprint(ret)
+        return ret
+
+    def upload_url(self, url, albumtitle, title=None):
+        album_id = self.get_or_make_album(albumtitle)
+        config = {'album': album_id}
+        if title:
+            config['title'] = title
+        ret = self.client.upload_from_url(url, config, anon=False)
+        return ret
 
 
 if __name__ == "__main__":

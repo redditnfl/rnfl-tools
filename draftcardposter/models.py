@@ -52,3 +52,5 @@ class Settings(models.Model):
     sheet_id = models.CharField(max_length=100)
     range_def = models.CharField(max_length=100)
     last_updated = models.DateTimeField()
+    subreddit = models.CharField(max_length=25)
+    imguralbum = models.CharField(max_length=100)

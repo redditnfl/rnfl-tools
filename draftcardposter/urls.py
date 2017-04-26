@@ -20,8 +20,9 @@ from . import views
 urlpatterns = [
     url(r'^players$', views.PlayerList.as_view(), name='player-list'),
     url(r'^update$', views.UpdatePlayers.as_view(), name='update-players'),
-    url(r'^preview', views.PreviewPost.as_view(), name='preview-post'),
+    url(r'^preview$', views.PreviewPost.as_view(), name='preview-post'),
     url(r'^player/(?P<pk>[0-9]+)$', views.PlayerDetail.as_view(), name='player-detail'),
     url(r'^cards/(?P<overall>[0-9]+)/(?P<team>[A-Z]{2,3})/(?P<name>[^,]+),(?P<pos>[A-Z]{1,3}),(?P<college>.*)\.(?P<fmt>html|png)$', views.PlayerCard.as_view(), name='player-card'),
+    url(r'^submit$', views.SubmitView.as_view(), name='submit-pick'),
     url(r'^$', views.IndexView.as_view(), name='index'),
 ]

@@ -1,4 +1,6 @@
 from django.shortcuts import render, redirect
+from praw import Reddit
+from praw.const import API_PATH
 from django.urls import reverse
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
@@ -14,14 +16,17 @@ from .ajaxmixin import AJAXListMixin, AJAXSingleObjectMixin
 from draftcards.draftcards import massage_values
 from draftcards.sheets import GoogleSheetsData
 from draftcards.render import Render
+from draftcards.imgur import Imgur
 from draftcards.screenshot import Screenshot
 import nflteams
 from django.db import transaction
+from urllib.request import urlopen
 
 def add_common_context(context):
     context['positions'] = Player.POSITIONS
     context['teams'] = sorted(nflteams.fullinfo.items(), key=lambda v: v[1]['fullname'])
     context['rounds'] = range(1, 8)
+    context['picks'] = range(1, 33)
     return context
 
 def latest_update(*args, **kwargs):
@@ -77,20 +82,69 @@ def player_if_found(name, college):
     if len(players) == 1:
         return players[0]
 
+def calculate_overall(rnd, pick):
+    # XXX: Fix
+    return ((int(rnd)-1)*32)+int(pick)
+
+@method_decorator(login_required, name='dispatch')
+class SubmitView(View):
+    def post(self, request, *args, **kwargs):
+        title = request.POST.get('title', None)
+        url = request.POST.get('imageurl', None)
+
+        if not title or not url:
+            raise Exception("AAAAAAAAA")
+        print("%s - %s" % (title, url))
+        s = Settings.objects.all()[0]
+        #self.submit_img_to_reddit(s.subreddit, title, url)
+        context = {}
+        try:
+            ret = self.upload_to_imgur(s.imguralbum, title, url)
+            context['imgururl'] = ret['link']
+            submission = self.submit_img_to_reddit(s.subreddit, title, context['imgururl'])
+            context['submission'] = submission
+            context['permalink'] = submission._reddit.config.reddit_url + submission.permalink
+        except Exception as e:
+            context['msg'] = str(e)
+        
+        return render(request, 'draftcardposter/submit.html', context=context)
+
+    def upload_to_imgur(self, album, title, url):
+        imgur = Imgur()
+        return imgur.upload_url(url, album, title)
+
+    def submit_img_to_reddit(self, srname, title, url):
+        r = Reddit('draftcardposter')
+        sub = r.subreddit(srname)
+        return sub.submit(title, url=url)
+
 @method_decorator(login_required, name='dispatch')
 class PreviewPost(View):
 
     def post(self, request, *args, **kwargs):
+        context = add_common_context({})
         player = player_if_found(name=request.POST.get('name', ''), college=request.POST.get('college', ''))
-        pprint(request.POST)
-        pprint(player)
-        context = {
-            'player': player,
-            'team': nflteams.fullinfo[request.POST.get('team', '')],
-            }
+        context['player'] = player
+        
+        team = nflteams.fullinfo[request.POST.get('team', '')]
+        context['team'] = team
+
         for k in ('name', 'college', 'position', 'round', 'pick'):
             context[k] = request.POST.get(k, '')
-        context = add_common_context(context)
+        overall = calculate_overall(context['round'], context['pick'])
+        context['overall'] = overall
+
+        pprint(context['team'])
+
+        title = "Round {round} - Pick {pick}: {name}, {position}, {college} ({team[fullname]})".format(
+                **context
+                )
+        context['title'] = title
+        
+        url = reverse('player-card', kwargs={'overall':overall, 'team':team['short'], 'pos':context['position'], 'name':context['name'], 'college':context['college'], 'fmt':'png'})
+        fullurl = request.build_absolute_uri(url)
+        context['imageurl'] = fullurl
+        
         return render(request, 'draftcardposter/preview.html', context=context)
 
 def split_name(name):
@@ -111,11 +165,9 @@ class PlayerCard(View):
 
     def get(self, request, overall, team, pos, name, college, fmt, *args, **kwargs):
         if fmt == 'png':
-            sshot = Screenshot(1300, 1300)
+            sshot = Screenshot(1280, 800)
             url = reverse('player-card', kwargs={'overall':overall, 'team':team, 'pos':pos, 'name':name, 'college':college, 'fmt':'html'})
             fullurl = request.build_absolute_uri(url)
-            print(url)
-            print(fullurl)
             png = sshot.sshot_url_to_png(fullurl)
             return HttpResponse(png, content_type="image/png")
         else:
@@ -131,6 +183,9 @@ class PlayerCard(View):
                     'firstname': firstname,
                     'lastname': lastname,
                     'college': college,
-                    'photo': 'draftcardposter/img/' + player.data['filename'] + '.jpg',
                     }
+            if player:
+                context['photo'] = 'draftcardposter/playerimgs/' + player.data['filename'] + '.jpg'
+            else:
+                context['photo'] = 'draftcardposter/playerimgs/silhouette.jpg'
             return render(request, 'draftcardposter/card-layout.html', context=context)
