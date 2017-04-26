@@ -1,0 +1,17 @@
+{% extends "draftcardposter/base.html" %}
+{% block title %}Draft card postinator - preview{% endblock %}
+
+{% block content %}
+<h1>/r/NFL Draft card postinator</h1>
+<p class="lead">Some random lol here</p>
+{% if msg %}
+<div class="alert alert-success" role="alert">{{ msg }}</div>
+{% endif %}
+{% if player %}
+{{ player.data.weight_lbs }}
+{{ player }}
+{% endif %}
+<hr />
+Title: Round {{ round }} - Pick {{ pick }}: {{ name }}, {{ position }}, {{ college }} ({{ team.fullname }})
+<hr />
+{% endblock %}

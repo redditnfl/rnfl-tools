@@ -1,0 +1,59 @@
+{% extends "draftcardposter/base.html" %}
+{% block title %}Draft card postinator{% endblock %}
+
+{% block content %}
+<h1>/r/NFL Draft card postinator</h1>
+<p class="lead">Some random lol here</p>
+{% if msg %}
+<div class="alert alert-success" role="alert">{{ msg }}</div>
+{% endif %}
+<form method="POST" action="{% url 'preview-post' %}">
+    {% csrf_token %}
+    <div class="row">
+        <div class="col-xs-6">
+            Round <select name="round" id="round" class="selectpicker" data-width="fit">
+                {% for round in rounds %}
+                <option>{{ round }}</option>
+                {% endfor %}
+            </select>
+            Pick <select name="pick" id="pick" class="selectpicker" data-width="fit">
+                <option>1</option>
+                <option>2</option>
+                <option>3</option>
+            </select>
+            Team <select name="team" id="team" class="selectpicker" data-width="fit" data-live-search="true">
+                {% for short, team in teams %}
+                <option value="{{ short }}">{{ team.mascot }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-3">
+            <div class="input-group">
+                <span class="input-group-addon" id="name-label">Player</span>
+                <input name="name" id="name" type="text" class="form-control" placeholder="Player" aria-describedby="name-label" />
+            </div>
+        </div>
+        <div class="col-xs-3">
+            Position <select name="position" id="position" class="selectpicker" data-width="fit">
+                {% for value, label in positions %}
+                <option value="{{ value }}">{{ label }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-xs-3">
+            <div class="input-group">
+                <span class="input-group-addon" id="college-label">College</span>
+                <input name="college" id="college" type="text" class="form-control" placeholder="College" aria-describedby="college-label" />
+            </div>
+        </div>
+        <div class="col-xs-3">
+            <button type="submit" class="btn btn-default" aria-label="Preview" id="preview">
+                <span class="glyphicon glyphicon-share-alt" aria-hidden="true"></span> Preview
+            </button>
+        </div>
+    </div>
+</form>
+<a href="{% url 'update-players' %}" class="btn btn-primary" role="button">Update player data</a>
+{% endblock %}
