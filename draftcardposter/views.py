@@ -165,7 +165,7 @@ class PlayerCard(View):
 
     def get(self, request, overall, team, pos, name, college, fmt, *args, **kwargs):
         if fmt == 'png':
-            sshot = Screenshot(1280, 800)
+            sshot = Screenshot(1280, 820)
             url = reverse('player-card', kwargs={'overall':overall, 'team':team, 'pos':pos, 'name':name, 'college':college, 'fmt':'html'})
             fullurl = request.build_absolute_uri(url)
             png = sshot.sshot_url_to_png(fullurl)
