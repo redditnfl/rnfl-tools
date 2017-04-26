@@ -56,6 +56,12 @@ body{
 	fill: #fff;
 	z-index: 999;
 }
+.logo svg{
+	display: block;
+	height: 67px;
+	width: 78px;
+	fill: #fff;
+}
 .name-ctn{
 	position: absolute;
 	bottom: 0;
