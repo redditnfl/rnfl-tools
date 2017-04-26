@@ -3,18 +3,28 @@ from pathlib import Path
 from pprint import pprint
 import json
 
-from render import Render
-from screenshot import Screenshot
-from sheets import GoogleSheetsData
+from .render import Render
+from .screenshot import Screenshot
+from .sheets import GoogleSheetsData
 
 def height_from_in(k, v):
     feet, inches = divmod(int(v), 12)
     s = '{0}\' {1}"'.format(feet, inches)
-    return 'Height', s
+    return 'height', s
 
 CONVERSIONS = {
-        'Height (in)': height_from_in
+        'height_in': height_from_in
 }
+
+def massage_values(player):
+    ret = {}
+    for key, value in player.items():
+        pprint("%s - %s" % (key,value))
+        ret[key] = value
+        if key in CONVERSIONS:
+            nk, nv = CONVERSIONS[key](key, value)
+            ret[nk] = nv
+    return ret
 
 class DraftCards:
 
@@ -27,21 +37,12 @@ class DraftCards:
         self.render = Render()
 
     def fn(self, player):
-        safename = player['Name'].replace(" ", "_").replace("'", "_").replace('.','_').lower()
+        safename = Path(player['Filename']).name
         return Path('output') / (safename + '.dummy')
-
-    def massage_values(self, player):
-        ret = {}
-        for key, value in player.items():
-            ret[key] = value
-            if key in CONVERSIONS:
-                nk, nv = CONVERSIONS[key](key, value)
-                ret[nk] = nv
-        return ret
 
     def main(self):
         for player in self.sheet.get_range_dict(self.range_def):
-            player = self.massage_values(player)
+            player = massage_values(player)
             print(player['Name'], end='... ')
             fn = self.fn(player)
 

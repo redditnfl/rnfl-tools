@@ -21,13 +21,14 @@ APPLICATION_NAME = 'rnfl draft cards'
 class GoogleSheetsData:
     discovery_url = 'https://sheets.googleapis.com/$discovery/rest?version=v4'
 
-    def __init__(self, sheet_id):
+    def __init__(self, sheet_id, parseargs=True):
         self.sheet_id = sheet_id
-        try:
-            import argparse
-            self.flags = argparse.ArgumentParser(parents=[tools.argparser]).parse_args()
-        except ImportError:
-            self.flags = None
+        if parseargs:
+            try:
+                import argparse
+                self.flags = argparse.ArgumentParser(parents=[tools.argparser]).parse_args()
+            except ImportError:
+                self.flags = None
 
 
     def get_credentials(self):

@@ -15,6 +15,10 @@ class Screenshot:
         self.driver.get('file://' + str(p.resolve()))
         self.driver.save_screenshot(outfn)
 
+    def sshot_url_to_png(self, url):
+        self.driver.get(url)
+        return self.driver.get_screenshot_as_png()
+
 if __name__ == "__main__":
     import sys
     s = Screenshot()
