@@ -72,6 +72,9 @@ body{
 	font-family: "lickety";
 	line-height: 0;
 	color: #fff;
+	font-weight: 300;
+	text-shadow: -5px 5px 0 #fff;
+	-webkit-text-shadow: -5px 5px 0 #2195d4;
 }
 .name span{
 	display: block;
@@ -95,9 +98,9 @@ body{
 }
 .pick-number{
   position: absolute;
-  top: 26px;
-  right: 16px;
-  font-size: 70px;
+  top: 29px;
+  right: 15px;
+  font-size: 40px;
 	-webkit-font-smoothing: antialiased;
 	font-family: "lickety";
 	line-height: 0;
