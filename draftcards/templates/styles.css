@@ -54,6 +54,7 @@ body{
 	transform: translateX(-50%);
 	-webkit-transform: translateX(-50%);
 	fill: #fff;
+	z-index: 999;
 }
 .name-ctn{
 	position: absolute;
