@@ -4,7 +4,7 @@
         <title>{{ p.Name }} /r/nfl draft card</title>
 				<link rel="stylesheet" type="text/css" href="styles.css">
     </head>
-    <body>
+    <body class="pick-seahawks">
         <div id="front" class="card">
 					<div class="logo">
 						<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 78 67" style="enable-background:new 0 0 78 67;" xml:space="preserve">
@@ -25,20 +25,22 @@
 						<div class="background-image"></div>
 						<div class="name-ctn">
 							<h1 class="name">
-								<span class="first-name">Leon</span>
-								<span class="last-name">Sandcastle</span>
+								<span id="js-first-name" class="first-name" data-name="Stevie">Stevie</span>
+								<span id="js-last-name" class="last-name" data-name="Tu'ikolovatu">Tu'ikolovatu</span>
 							</h1>
 						</div>
 						<div class="pick-number">#228</div>
+						<div class="team-logo"></div>
 					</div>
         </div>
         <div id="back" class="card">
 					<div class="content">
 						<div class="top-content">
+							<h3 class="special">EXCLUSIVE</h3>
 							<h2 class="pick">Selected 8<sup>th</sup> Overall</h2>
 							<h1 class="back-name">
-								<span class="line-name">Christian</span>
-								<span class="line-name">McCaffrey</span>
+								<span id="js-back-first-name" class="line-name">Stevie</span>
+								<span id="js-back-last-name" class="line-name">Tu'ikolovatu</span>
 							</h1>
 							<h2 class="position">Running Back - Sanford</h2>
 						</div>
@@ -55,6 +57,7 @@
 						</div>
 					</div>
         </div>
+				<script src="app.js"></script>
     </body>
 </html>
 
