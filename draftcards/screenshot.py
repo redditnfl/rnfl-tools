@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 from selenium import webdriver
 from pathlib import Path
+from time import sleep
 
 class Screenshot:
 
@@ -15,8 +16,9 @@ class Screenshot:
         self.driver.get('file://' + str(p.resolve()))
         self.driver.save_screenshot(outfn)
 
-    def sshot_url_to_png(self, url):
+    def sshot_url_to_png(self, url, sleep_seconds=0.0):
         self.driver.get(url)
+        sleep(sleep_seconds)
         return self.driver.get_screenshot_as_png()
 
 if __name__ == "__main__":
