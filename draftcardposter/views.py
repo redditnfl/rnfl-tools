@@ -202,6 +202,21 @@ def beststats(player, pos):
             stats.append((p, player.data[p]))
     return stats[:3]
 
+class RandomCard(View):
+    def get(self, request, *args, **kwargs):
+        import random
+
+        p = Player.objects.all().order_by('?')[0]
+        t = random.choice(list(nflteams.mascots.keys()))
+
+        return redirect('player-card', permanent=True,**{
+            'overall': str(random.randint(1, 256)),
+            'team': t,
+            'pos': p.position,
+            'name': p.name,
+            'college': p.college,
+            'fmt': 'png'
+            })
 
 class PlayerCard(View):
 
