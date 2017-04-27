@@ -47,7 +47,9 @@
                             <h2 class="position">{{ position_long }} - {{ college }}</h2>
 						</div>
 						<div class="bottom-content">
+                            {% if p.data.height %}
 							<h2 class="stat-header">Stats</h2>
+                            {% endif %}
                             {% for stat, value in stats %}
 							<div class="stat-group">
                                 <span class="big">{{ value }}</span>
