@@ -23,3 +23,10 @@ def statname(value):
     else:
         return value.replace("_", " ").title()
 
+@register.filter 
+def teamcssclass(value):
+    m = value['mascot']
+    if m == '49ers':
+        return 'fortyniners'
+    else:
+        return m.lower()
