@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+import traceback
 from django.contrib.staticfiles import finders
 from praw import Reddit
 from praw.const import API_PATH
@@ -129,7 +130,8 @@ class SubmitView(View):
             context['submission'] = submission
             context['permalink'] = submission._reddit.config.reddit_url + submission.permalink
         except Exception as e:
-            context['msg'] = str(e)
+            context['msgs'].append(('danger', str(e)))
+            context['msgs'].append(('danger', traceback.format_exc()))
         
         return render(request, 'draftcardposter/submit.html', context=context)
 
@@ -198,7 +200,7 @@ def beststats(player, pos):
     for p in prio.merge_with(default).as_list():
         if p in player.data and player.data[p]:
             stats.append((p, player.data[p]))
-    return stats
+    return stats[:3]
 
 
 class PlayerCard(View):
