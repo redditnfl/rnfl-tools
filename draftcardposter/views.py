@@ -189,6 +189,18 @@ def ordinal(num):
     else:
         return 'th'
 
+def beststats(player, pos):
+    if player is None or player.data is None:
+        return None
+    prio = Priority.objects.get(position=pos)
+    default = Priority.objects.get(position='Default')
+    stats = []
+    for p in prio.merge_with(default).as_list():
+        if p in player.data and player.data[p]:
+            stats.append((p, player.data[p]))
+    return stats
+
+
 class PlayerCard(View):
 
     def get(self, request, overall, team, pos, name, college, fmt, *args, **kwargs):
@@ -201,6 +213,7 @@ class PlayerCard(View):
         else:
             player = player_if_found(name, college)
             firstname, lastname = split_name(name)
+            stats = beststats(player, pos)
             context = {
                     'p': player,
                     'position': pos,
@@ -212,6 +225,7 @@ class PlayerCard(View):
                     'lastname': lastname,
                     'college': college,
                     'team': nflteams.fullinfo[team],
+                    'stats': stats,
                     }
             context['photo'] = 'draftcardposter/draft-empty.jpg'
             if player:

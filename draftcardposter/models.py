@@ -70,3 +70,26 @@ class Priority(models.Model):
 
     def __str__(self):
         return "{p.position}: {p.prio1}, {p.prio2}, {p.prio3}, {p.prio4}".format(p=self)
+
+    def as_list(self):
+        r = []
+        if self.prio1:
+            r.append(self.prio1)
+        if self.prio2:
+            r.append(self.prio2)
+        if self.prio3:
+            r.append(self.prio3)
+        if self.prio4:
+            r.append(self.prio4)
+        return r
+
+    def merge_with(self, other):
+        m = self.as_list()
+        for p in other.as_list():
+            if p not in m:
+                m.append(p)
+        self.prio1 = m[0] if len(m) > 0 else None
+        self.prio2 = m[1] if len(m) > 1 else None
+        self.prio3 = m[2] if len(m) > 2 else None
+        self.prio4 = m[3] if len(m) > 3 else None
+        return self

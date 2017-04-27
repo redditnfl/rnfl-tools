@@ -1,4 +1,5 @@
 {% load static %}
+{% load draftcard_extras %}
 <!DOCTYPE html>
 <html>
     <head>
@@ -47,22 +48,12 @@
 						</div>
 						<div class="bottom-content">
 							<h2 class="stat-header">Stats</h2>
-                            {% if p.data.40_yard %}
+                            {% for stat, value in stats %}
 							<div class="stat-group">
-                                <span class="big">{{ p.data.40_yard }}</span>
-								<span class="small">40yd. time</span>
+                                <span class="big">{{ value }}</span>
+                                <span class="small">{{ stat|statname }}</span>
 							</div>
-                            {% elif p.data.3cone %}
-							<div class="stat-group">
-                                <span class="big">{{ p.data.3cone }}</span>
-								<span class="small">3cone drill</span>
-							</div>
-                            {% endif %}
-                            {% if p.data.bench_press %}
-                            <div class="stat-group">
-                                <span class="big">{{ p.data.bench_press }}</span>
-                                <span class="small">bench press reps</span>
-                            {% endif %}
+                            {% endfor %}
                             {% if p.data.height %}
 							<div class="stat-group">
                                 <span class="big">{{ p.data.height }}, {{ p.data.weight_lbs }} lbs</span>
