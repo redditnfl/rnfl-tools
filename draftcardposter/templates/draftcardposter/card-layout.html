@@ -5,7 +5,7 @@
         <title>{{ name }} /r/nfl draft card</title>
         <link rel="stylesheet" type="text/css" href="{% static "draftcardposter/styles.css" %}">
     </head>
-    <body>
+    <body class="pick-{{ team.mascot|lower }}">
         <div id="front" class="card">
 					<div class="logo">
 						<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 78 67" style="enable-background:new 0 0 78 67;" xml:space="preserve">
@@ -26,36 +26,53 @@
                         <div class="background-image" style="background-size: cover; background-image: url('{% static photo %}')"></div>
 						<div class="name-ctn">
 							<h1 class="name">
-								<span class="first-name">{{ firstname }}</span>
-								<span class="last-name">{{ lastname }}</span>
+                                <span id="js-first-name" class="first-name" data-name="{{ firstname }}">{{ firstname }}</span>
+                                <span id="js-last-name" class="last-name" data-name="{{ lastname }}">{{ lastname }}</span>
 							</h1>
 						</div>
                         <div class="pick-number">#{{ overall }}</div>
+                        <div class="team-logo"></div>
 					</div>
         </div>
         <div id="back" class="card">
 					<div class="content">
 						<div class="top-content">
+                            <h3 class="special">EXCLUSIVE</h3>
                             <h2 class="pick">Selected {{ overall }}<sup>{{ ordinal }}</sup> Overall</h2>
 							<h1 class="back-name">
-								<span class="line-name">{{ firstname }}</span>
-								<span class="line-name">{{ lastname }}</span>
+								<span id="js-back-first-name" class="line-name">{{ firstname }}</span>
+								<span id="js-back-last-name" class="line-name">{{ lastname }}</span>
 							</h1>
                             <h2 class="position">{{ position_long }} - {{ college }}</h2>
 						</div>
 						<div class="bottom-content">
-							<h2 class="stat-header">College Stats</h2>
+							<h2 class="stat-header">Stats</h2>
+                            {% if p.data.40_yard %}
 							<div class="stat-group">
-								<span class="big">24</span>
-								<span class="small">Touchdowns</span>
+                                <span class="big">{{ p.data.40_yard }}</span>
+								<span class="small">40yd. time</span>
 							</div>
+                            {% elif p.data.3cone %}
 							<div class="stat-group">
-								<span class="big">3.9k</span>
-								<span class="small">All Purpose Yards</span>
+                                <span class="big">{{ p.data.3cone }}</span>
+								<span class="small">3cone drill</span>
 							</div>
+                            {% endif %}
+                            {% if p.data.bench_press %}
+                            <div class="stat-group">
+                                <span class="big">{{ p.data.bench_press }}</span>
+                                <span class="small">bench press reps</span>
+                            {% endif %}
+                            {% if p.data.height %}
+							<div class="stat-group">
+                                <span class="big">{{ p.data.height }}, {{ p.data.weight_lbs }} lbs</span>
+								<span class="small"></span>
+							</div>
+                            {% endif %}
 						</div>
 					</div>
         </div>
+        <script src="{% static "draftcardposter/app.js" %}"></script>
     </body>
 </html>
 

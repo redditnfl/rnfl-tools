@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from django.contrib.staticfiles import finders
 from praw import Reddit
 from praw.const import API_PATH
 from django.urls import reverse
@@ -10,7 +11,7 @@ from datetime import datetime, timezone
 from pprint import pprint
 from django.views import generic, View
 
-from .models import Player, Settings
+from .models import Player, Settings, Priority
 from .ajaxmixin import AJAXListMixin, AJAXSingleObjectMixin
 
 from draftcards.draftcards import massage_values
@@ -19,6 +20,7 @@ from draftcards.render import Render
 from draftcards.imgur import Imgur
 from draftcards.screenshot import Screenshot
 import nflteams
+import draft
 from django.db import transaction
 from urllib.request import urlopen
 
@@ -26,7 +28,9 @@ def add_common_context(context):
     context['positions'] = Player.POSITIONS
     context['teams'] = sorted(nflteams.fullinfo.items(), key=lambda v: v[1]['fullname'])
     context['rounds'] = range(1, 8)
-    context['picks'] = range(1, 33)
+    context['picks'] = range(1, 44)
+    context['settings'] = Settings.objects.all()[0]
+    context['msgs'] = []
     return context
 
 def latest_update(*args, **kwargs):
@@ -39,6 +43,21 @@ class IndexView(generic.TemplateView):
     def get_context_data(self, *args, **kwargs):
         context_data = super(IndexView, self).get_context_data(*args, **kwargs)
         return add_common_context(context_data)
+
+class MissingPhotos(generic.TemplateView):
+    template_name = 'draftcardposter/missingphotos.html'
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(MissingPhotos, self).get_context_data(*args, **kwargs)
+        players = []
+        for player in Player.objects.all():
+            photo = 'draftcardposter/playerimgs/' + player.data['filename'] + '.jpg'
+            if not finders.find(photo):
+                players.append(player)
+        context['players'] = players
+        return add_common_context(context);
+
+
 
 @method_decorator(last_modified(latest_update), name='dispatch')
 class PlayerList(AJAXListMixin, generic.ListView):
@@ -54,9 +73,20 @@ class PlayerDetail(AJAXSingleObjectMixin, generic.DetailView):
 class UpdatePlayers(View):
 
     def get(self, request, *args, **kwargs):
+        context = add_common_context({})
         settings = Settings.objects.all()[0]
-        pprint(settings)
         sheets = GoogleSheetsData(settings.sheet_id, parseargs=False)
+
+        Priority.objects.all().delete()
+        i = 0
+        for prio in sheets.get_range_dict(settings.prio_range_def):
+            lowercase_dict = dict([(k.lower(), v) for (k,v) in prio.items()])
+            p = Priority(**lowercase_dict)
+            p.save()
+            
+            i += 1
+        context['msgs'].append(('success', 'Updated %d priorities' % i))
+        
         Player.objects.all().delete()
         players = sheets.get_range_dict(settings.range_def)
         i = 0
@@ -70,11 +100,9 @@ class UpdatePlayers(View):
             p.data = player
             p.save()
             i += 1
-        context = add_common_context({'msg': 'Updated %d player%s' % (i, '' if i==1 else 's')})
+        context['msgs'].append(('success', 'Updated %d player%s' % (i, '' if i==1 else 's')))
         settings.last_updated = datetime.now(timezone.utc)
         settings.save()
-        from django.db import connection
-        pprint(connection.queries)
         return render(request, 'draftcardposter/index.html', context=context)
 
 def player_if_found(name, college):
@@ -82,22 +110,18 @@ def player_if_found(name, college):
     if len(players) == 1:
         return players[0]
 
-def calculate_overall(rnd, pick):
-    # XXX: Fix
-    return ((int(rnd)-1)*32)+int(pick)
-
 @method_decorator(login_required, name='dispatch')
 class SubmitView(View):
     def post(self, request, *args, **kwargs):
+        s = Settings.objects.all()[0]
+        context = add_common_context({})
         title = request.POST.get('title', None)
         url = request.POST.get('imageurl', None)
 
         if not title or not url:
             raise Exception("AAAAAAAAA")
-        print("%s - %s" % (title, url))
-        s = Settings.objects.all()[0]
-        #self.submit_img_to_reddit(s.subreddit, title, url)
-        context = {}
+
+        context['cardurl'] = url
         try:
             ret = self.upload_to_imgur(s.imguralbum, title, url)
             context['imgururl'] = ret['link']
@@ -131,15 +155,19 @@ class PreviewPost(View):
 
         for k in ('name', 'college', 'position', 'round', 'pick'):
             context[k] = request.POST.get(k, '')
-        overall = calculate_overall(context['round'], context['pick'])
+        overall = draft.overall(2017, int(context['round']), int(context['pick']))
         context['overall'] = overall
-
-        pprint(context['team'])
 
         title = "Round {round} - Pick {pick}: {name}, {position}, {college} ({team[fullname]})".format(
                 **context
                 )
         context['title'] = title
+
+        pick_type = draft.pick_type(2017, int(context['round']), int(context['pick']))
+        if pick_type and pick_type in (draft.FORFEITED, draft.UNKNOWN, draft.MOVED):
+            context['msgs'].append(('warning', 'I don\'t think round {round} has a pick #{pick}. Are you sure?'.format(**context)))
+        elif pick_type and pick_type == draft.COMP:
+            context['msgs'].append(('info', 'This is a compensatory pick. Just so you\'re aware'))
         
         url = reverse('player-card', kwargs={'overall':overall, 'team':team['short'], 'pos':context['position'], 'name':context['name'], 'college':context['college'], 'fmt':'png'})
         fullurl = request.build_absolute_uri(url)
@@ -165,10 +193,10 @@ class PlayerCard(View):
 
     def get(self, request, overall, team, pos, name, college, fmt, *args, **kwargs):
         if fmt == 'png':
-            sshot = Screenshot(1280, 820)
+            sshot = Screenshot(1260, 820)
             url = reverse('player-card', kwargs={'overall':overall, 'team':team, 'pos':pos, 'name':name, 'college':college, 'fmt':'html'})
             fullurl = request.build_absolute_uri(url)
-            png = sshot.sshot_url_to_png(fullurl)
+            png = sshot.sshot_url_to_png(fullurl, 5.0)
             return HttpResponse(png, content_type="image/png")
         else:
             player = player_if_found(name, college)
@@ -183,9 +211,12 @@ class PlayerCard(View):
                     'firstname': firstname,
                     'lastname': lastname,
                     'college': college,
+                    'team': nflteams.fullinfo[team],
                     }
+            context['photo'] = 'draftcardposter/draft-empty.jpg'
             if player:
-                context['photo'] = 'draftcardposter/playerimgs/' + player.data['filename'] + '.jpg'
-            else:
-                context['photo'] = 'draftcardposter/playerimgs/silhouette.jpg'
+                photo = 'draftcardposter/playerimgs/' + player.data['filename'] + '.jpg'
+                if finders.find(photo):
+                    context['photo'] = photo
             return render(request, 'draftcardposter/card-layout.html', context=context)
+

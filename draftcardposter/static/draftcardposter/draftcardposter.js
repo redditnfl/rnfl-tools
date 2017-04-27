@@ -1,4 +1,3 @@
-
 $(document).ready(function() {
     $.getJSON('players', function(data) {
         $("#name").autocomplete({

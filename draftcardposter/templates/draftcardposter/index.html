@@ -1,12 +1,20 @@
 {% extends "draftcardposter/base.html" %}
-{% block title %}Draft card postinator{% endblock %}
+{% load static %}
+{% block title %}Front{% endblock %}
+
+{% block scripts %}
+<script src="{% static "draftcardposter/draftcardposter.js" %}"></script>
+{% endblock %}
 
 {% block content %}
 <h1>/r/NFL Draft card postinator</h1>
-<p class="lead">Some random lol here</p>
-{% if msg %}
-<div class="alert alert-success" role="alert">{{ msg }}</div>
-{% endif %}
+<p class="lead">Select pick, team and player - I'll do the rest</p>
+{% for kind, msg in msgs %}
+<div class="alert alert-{{ kind }}" role="alert">
+    {{ msg }}
+</div>
+{% endfor %}
+<div>
 <form method="POST" action="{% url 'preview-post' %}">
     {% csrf_token %}
     <div class="row">
@@ -55,5 +63,6 @@
         </div>
     </div>
 </form>
-<a href="{% url 'update-players' %}" class="btn btn-primary" role="button">Update player data</a>
+</div>
+
 {% endblock %}
