@@ -41,7 +41,7 @@ class Imgur:
         self.client.set_user_auth(credentials['access_token'], credentials['refresh_token'])
 
     def get_or_make_album(self, albumtitle):
-        for album in self.client.get_account_albums('rasher'):
+        for album in self.client.get_account_albums('me'):
             if album.title == albumtitle:
                 return album.id
         ret = self.client.create_album({'title': albumtitle})
