@@ -56,6 +56,18 @@ def ordinal_suffix(n):
   'nd'
   >>> ordinal_suffix(23)
   'rd'
+  >>> ordinal_suffix(101)
+  'st'
+  >>> ordinal_suffix(111)
+  'th'
+  >>> ordinal_suffix(112)
+  'th'
+  >>> ordinal_suffix(113)
+  'th'
+  >>> ordinal_suffix(121)
+  'st'
+  >>> ordinal_suffix(1111)
+  'th'
   >>> ordinal_suffix(1322)
   'nd'
   >>> ordinal_suffix('horse')
