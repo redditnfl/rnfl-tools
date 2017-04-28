@@ -47,8 +47,8 @@
                             <h2 class="position">{{ position_long }} - {{ college }}</h2>
 						</div>
 						<div class="bottom-content">
-                            {% if p.data.height %}
-							<h2 class="stat-header">Stats</h2>
+                            {% if stats %}
+							<h2 class="stat-header">Combine Stats</h2>
                             {% endif %}
                             {% for stat, value in stats %}
 							<div class="stat-group">
@@ -57,6 +57,9 @@
 							</div>
                             {% endfor %}
                             {% if p.data.height %}
+                            {% if not stats %}
+							<h2 class="stat-header">Draft Measurables</h2>
+                            {% endif %}
 							<div class="stat-group">
                                 <span class="big">{{ p.data.height }}, {{ p.data.weight_lbs }} lbs</span>
 								<span class="small"></span>
