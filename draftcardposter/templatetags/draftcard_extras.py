@@ -30,3 +30,49 @@ def teamcssclass(value):
         return 'fortyniners'
     else:
         return m.lower()
+
+@register.filter 
+def ordinal_suffix(n):
+  """Return the ordinal suffix for a positive integer
+  >>> ordinal_suffix(0)
+  ''
+  >>> ordinal_suffix(1)
+  'st'
+  >>> ordinal_suffix(2)
+  'nd'
+  >>> ordinal_suffix(3)
+  'rd'
+  >>> ordinal_suffix(4)
+  'th'
+  >>> ordinal_suffix(11)
+  'th'
+  >>> ordinal_suffix(12)
+  'th'
+  >>> ordinal_suffix(13)
+  'th'
+  >>> ordinal_suffix(21)
+  'st'
+  >>> ordinal_suffix(22)
+  'nd'
+  >>> ordinal_suffix(23)
+  'rd'
+  >>> ordinal_suffix(1322)
+  'nd'
+  >>> ordinal_suffix('horse')
+  ''
+  """
+  try:
+      n = int(n)
+  except Exception:
+      return ''
+  if n < 1:
+    return ''
+  elif n >= 100:
+    return ordinal_suffix(n%100)
+  elif 11 <= n <= 13:
+    return 'th'
+  elif n%10 in (1,2,3):
+    return ('st','nd','rd')[n%10-1]
+  else:
+    return 'th'
+

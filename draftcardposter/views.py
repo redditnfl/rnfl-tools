@@ -180,17 +180,6 @@ class PreviewPost(View):
 def split_name(name):
     return name.split(' ', 1)
 
-def ordinal(num):
-    lastdigit = int(num[-1])
-    if lastdigit == 1:
-        return 'st'
-    elif lastdigit == 2:
-        return 'nd'
-    elif lastdigit == 3:
-        return 'rd'
-    else:
-        return 'th'
-
 def beststats(player, pos):
     if player is None or player.data is None:
         return None
@@ -235,7 +224,6 @@ class PlayerCard(View):
                     'p': player,
                     'position': pos,
                     'position_long': dict(Player.POSITIONS)[pos],
-                    'ordinal': ordinal(overall),
                     'overall': overall,
                     'name': name,
                     'firstname': firstname,
