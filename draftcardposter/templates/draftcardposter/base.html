@@ -35,7 +35,7 @@
         {% block content %}
         {% endblock %}
         <hr />
-        Player data last updated {{ settings.last_updated }} - <a href="{% url 'update-players' %}">update now</a>
+        Player data last updated {{ settings.last_updated|timesince }} ago - <a href="{% url 'update-players' %}">update now</a>
 
         </div>
 
