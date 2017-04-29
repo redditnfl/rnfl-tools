@@ -90,5 +90,5 @@ var nameResizerThing = (function(){
 	}
 })();
 var goldenPicketThing = (function(){
-	(Math.floor(Math.random() * 49) + 1) > 48 && body.classList.add("gold");
+	(Math.floor(Math.random() * 49) + 1) > 1000.00000 && body.classList.add("gold");
 })();

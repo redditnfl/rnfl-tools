@@ -91,8 +91,7 @@ class UpdatePlayers(View):
         players = sheets.get_range_dict(settings.range_def)
         i = 0
         for player in players:
-            import json
-            p = Player(name=player['name'], position=player['pos'], college=player['college'], data_json=json.dumps(player))
+            p = Player(name=player['name'], position=player['pos'], college=player['college'])
             del(player['name'])
             del(player['pos'])
             del(player['college'])
@@ -249,5 +248,6 @@ class PlayerCard(View):
                 photo = 'draftcardposter/playerimgs/' + player.data['filename'] + '.jpg'
                 if finders.find(photo):
                     context['photo'] = photo
+
             return render(request, 'draftcardposter/card-layout.html', context=context)
 
