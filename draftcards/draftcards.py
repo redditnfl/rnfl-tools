@@ -19,7 +19,6 @@ CONVERSIONS = {
 def massage_values(player):
     ret = {}
     for key, value in player.items():
-        pprint("%s - %s" % (key,value))
         ret[key] = value
         if key in CONVERSIONS:
             nk, nv = CONVERSIONS[key](key, value)

@@ -43,7 +43,6 @@ class Player(models.Model):
 
     @data.setter
     def data(self, value):
-        print(value)
         self.data_json = json.dumps(value)
 
     def __str__(self):
