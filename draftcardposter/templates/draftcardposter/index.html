@@ -19,17 +19,17 @@
     {% csrf_token %}
     <div class="row">
         <div class="col-xs-6">
-            Round <select name="round" id="round" class="selectpicker" data-width="fit">
+            Round <select name="round" id="round" class="selectpicker" data-width="fit" title="Round">
                 {% for round in rounds %}
                 <option>{{ round }}</option>
                 {% endfor %}
             </select>
-            Pick <select name="pick" id="pick" class="selectpicker" data-width="fit">
+            Pick <select name="pick" id="pick" class="selectpicker" data-width="fit" title="Pick">
                 {% for pick in picks %}
                 <option>{{ pick }}</option>
                 {% endfor %}
             </select>
-            Team <select name="team" id="team" class="selectpicker" data-width="fit" data-live-search="true">
+            Team <select name="team" id="team" class="selectpicker" data-width="fit" title="Team" data-live-search="true">
                 {% for short, team in teams %}
                 <option value="{{ short }}">{{ team.mascot }}</option>
                 {% endfor %}

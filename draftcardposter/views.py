@@ -159,14 +159,18 @@ class PreviewPost(View):
 
     def post(self, request, *args, **kwargs):
         context = add_common_context({})
-        player = player_if_found(name=request.POST.get('name', ''), college=request.POST.get('college', ''))
+        for k in ('name', 'college', 'position', 'round', 'pick', 'team'):
+            if k not in request.POST or not request.POST[k]:
+                context['msgs'].append(('danger', 'You didn\'t set %s' % k))
+                return render(request, 'draftcardposter/index.html', context=context)
+            context[k] = request.POST[k]
+
+        player = player_if_found(name=request.POST['name'], college=request.POST['college'])
         context['player'] = player
         
-        team = nflteams.fullinfo[request.POST.get('team', '')]
+        team = nflteams.fullinfo[request.POST['team']]
         context['team'] = team
 
-        for k in ('name', 'college', 'position', 'round', 'pick'):
-            context[k] = request.POST.get(k, '')
         overall = draft.overall(2017, int(context['round']), int(context['pick']))
         context['overall'] = overall
 
