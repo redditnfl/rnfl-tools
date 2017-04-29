@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-from pprint import pprint
 import json
 from imgurpython import ImgurClient
 import os.path
@@ -45,7 +44,7 @@ class Imgur:
             if album.title == albumtitle:
                 return album.id
         ret = self.client.create_album({'title': albumtitle})
-        return ret.id
+        return ret['id']
 
     def upload(self, path, albumtitle, title=None):
         album_id = self.get_or_make_album(albumtitle)
@@ -53,7 +52,6 @@ class Imgur:
         if title:
             config['title'] = title
         ret = self.client.upload_from_path(path, config, anon=False)
-        pprint(ret)
         return ret
 
     def upload_url(self, url, albumtitle, title=None):
