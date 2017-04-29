@@ -129,6 +129,8 @@ class SubmitView(View):
             submission = self.submit_img_to_reddit(s.subreddit, title, context['imgururl'])
             context['submission'] = submission
             context['permalink'] = submission._reddit.config.reddit_url + submission.permalink
+            if s.live_thread_id:
+                live_thread = self.post_to_live_thread(s.live_thread_id, context['permalink'])
         except Exception as e:
             context['msgs'].append(('danger', str(e)))
             context['msgs'].append(('danger', traceback.format_exc()))
@@ -143,6 +145,11 @@ class SubmitView(View):
         r = Reddit('draftcardposter')
         sub = r.subreddit(srname)
         return sub.submit(title, url=url)
+
+    def post_to_live_thread(self, live_thread_id, body):
+        r = Reddit('draftcardposter')
+        live_thread = r.live(live_thread_id)
+        live_thread.contrib.add(body)
 
 @method_decorator(login_required, name='dispatch')
 class PreviewPost(View):

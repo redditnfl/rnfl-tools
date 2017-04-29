@@ -58,6 +58,7 @@ class Settings(models.Model):
     imguralbum = models.CharField(max_length=100)
     prio_range_def = models.CharField(max_length=100)
     posting_enabled = models.BooleanField(default=True)
+    live_thread_id = models.CharField(max_length=60, blank=True)
 
 
 class Priority(models.Model):
