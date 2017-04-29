@@ -72,8 +72,12 @@ assert overall(2017, 4, 1) == 108
 assert overall(2017, 4, 13) == 119
 assert overall(2017, 4, 35) == 141
 assert overall(2017, 5, 1) == 145
+assert overall(2017, 5, 41) == 184
 assert overall(2017, 6, 1) == 185
 assert overall(2017, 7, 1) == 219
+assert overall(2017, 6, 26) == 210
+assert overall(2017, 6, 28) == 211
+assert overall(2017, 6, 35) == 218
 
 assert pick_type(2017, 5, 0) == UNKNOWN
 assert pick_type(2017, 5, 1) == None
