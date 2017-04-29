@@ -126,10 +126,13 @@ class SubmitView(View):
         try:
             ret = self.upload_to_imgur(s.imguralbum, title, url)
             context['imgururl'] = ret['link']
-            submission = self.submit_img_to_reddit(s.subreddit, title, context['imgururl'])
-            context['submission'] = submission
-            context['permalink'] = submission._reddit.config.reddit_url + submission.permalink
-            if s.live_thread_id:
+            permalink = None
+            if s.posting_enabled:
+                submission = self.submit_img_to_reddit(s.subreddit, title, context['imgururl'])
+                context['submission'] = submission
+                permalink = submission._reddit.config.reddit_url + submission.permalink
+                context['permalink'] = permalink
+            if s.live_thread_id and permalink is not None:
                 live_thread = self.post_to_live_thread(s.live_thread_id, context['permalink'])
         except Exception as e:
             context['msgs'].append(('danger', str(e)))
