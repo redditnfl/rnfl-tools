@@ -15,7 +15,6 @@ from django.views import generic, View
 from .models import Player, Settings, Priority
 from .ajaxmixin import AJAXListMixin, AJAXSingleObjectMixin
 
-from draftcards.draftcards import massage_values
 from draftcards.sheets import GoogleSheetsData
 from draftcards.render import Render
 from draftcards.imgur import Imgur
@@ -94,7 +93,6 @@ class UpdatePlayers(View):
         for player in players:
             import json
             p = Player(name=player['name'], position=player['pos'], college=player['college'], data_json=json.dumps(player))
-            player = massage_values(player)
             del(player['name'])
             del(player['pos'])
             del(player['college'])

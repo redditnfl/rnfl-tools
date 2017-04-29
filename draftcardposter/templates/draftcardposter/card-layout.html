@@ -52,7 +52,7 @@
                             {% endif %}
                             {% for stat, value in stats %}
 							<div class="stat-group">
-                                <span class="big">{{ value }}</span>
+                                <span class="big">{{ value|formatvalue:stat }}</span>
                                 <span class="small">{{ stat|statname }}</span>
 							</div>
                             {% endfor %}
@@ -61,7 +61,7 @@
 							<h2 class="stat-header">Draft Measurables</h2>
                             {% endif %}
 							<div class="stat-group">
-                                <span class="big">{{ p.data.height }}, {{ p.data.weight_lbs }} lbs</span>
+                                <span class="big">{{ p.data.height_in|formatvalue:'height_in' }}, {{ p.data.weight_lbs|formatvalue:'weight_lbs' }}</span>
 								<span class="small"></span>
 							</div>
                             {% endif %}

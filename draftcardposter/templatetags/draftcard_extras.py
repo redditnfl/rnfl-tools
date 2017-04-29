@@ -23,6 +23,24 @@ def statname(value):
     else:
         return value.replace("_", " ").title()
 
+@register.filter
+@stringfilter
+def formatvalue(value, statname):
+    if statname in ('hand_size', 'arm_length', 'vert_leap', 'broad_jump'):
+        return value + '"'
+    elif statname in ('40_yard', 'shuttle', '3cone', '60ydshuttle'):
+        return value #+ ' s'
+    elif statname in ('weight_lbs',):
+        return value + ' lbs'
+    elif statname in ('height_in',):
+        return in_to_ft_in(value)
+    return value
+
+@register.filter
+def in_to_ft_in(value):
+    feet, inches = divmod(int(value), 12)
+    return '{0}\' {1}"'.format(feet, inches)
+
 @register.filter 
 def teamcssclass(value):
     m = value['mascot']
