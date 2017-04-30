@@ -6,7 +6,7 @@
         <title>{{ name }} /r/nfl draft card</title>
         <link rel="stylesheet" type="text/css" href="{% static "draftcardposter/styles.css" %}">
     </head>
-    <body class="pick-{{ team|teamcssclass }}{% if p and p.data and p.data.is_best_value_pick %} pick-best-value{% endif %}">
+    <body class="pick-{{ team|teamcssclass }}{% if p and p.data and p.data.is_best_value_pick %} pick-best-value{% endif %}{% if misprint %} card-misprint{% endif %}">
         <div id="front" class="card">
 					<div class="logo">
 						<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 78 67" style="enable-background:new 0 0 78 67;" xml:space="preserve">

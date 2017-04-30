@@ -236,6 +236,9 @@ class PlayerCard(View):
             return HttpResponse(png, content_type="image/png")
         else:
             player = player_if_found(name, college)
+            misprint = name.startswith('MISPRINT ')
+            if misprint:
+                name = name.replace('MISPRINT ','')
             firstname, lastname = split_name(name)
             stats = beststats(player, pos)
             context = {
@@ -249,6 +252,7 @@ class PlayerCard(View):
                     'college': college,
                     'team': nflteams.fullinfo[team],
                     'stats': stats,
+                    'misprint': misprint,
                     }
             context['photo'] = 'draftcardposter/draft-empty.jpg'
             if player and 'filename' in player.data:
