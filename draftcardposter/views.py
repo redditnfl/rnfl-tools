@@ -244,7 +244,7 @@ class PlayerCard(View):
                     'stats': stats,
                     }
             context['photo'] = 'draftcardposter/draft-empty.jpg'
-            if player:
+            if player and 'filename' in player.data:
                 photo = 'draftcardposter/playerimgs/' + player.data['filename'] + '.jpg'
                 if finders.find(photo):
                     context['photo'] = photo
