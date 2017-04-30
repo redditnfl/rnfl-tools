@@ -90,7 +90,7 @@ class Priority(models.Model):
         return r
 
     def merge_with(self, other):
-        m = self.as_list()
+        m = [o for o in self.as_list() if o]
         for p in other.as_list():
             if p not in m:
                 m.append(p)
