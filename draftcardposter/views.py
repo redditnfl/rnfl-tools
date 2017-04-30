@@ -69,6 +69,12 @@ class PlayerDetail(AJAXSingleObjectMixin, generic.DetailView):
     model = Player
     context_object_name = 'player'
 
+def remove_na(d):
+    dk = [k for k, v in d.items() if v.lower().strip() == 'n/a']
+    for k in dk:
+        del(d[k])
+    return d
+
 @method_decorator(transaction.atomic, name='dispatch')
 class UpdatePlayers(View):
 
@@ -95,6 +101,7 @@ class UpdatePlayers(View):
             del(player['name'])
             del(player['pos'])
             del(player['college'])
+            player = remove_na(player)
             p.data = player
             p.save()
             i += 1
