@@ -677,4 +677,24 @@ body.gold #front {
 body.gold #back {
   background-image: -webkit-repeating-linear-gradient(143deg, #472819 0%, #472819 2%, #d99e4c 23%, #a87b32 29%, #865c25 33%, #e2b566 61%, #efdf80 66%, #9f7c3c 79%, #2c1b14 95%, #2c1b14 100%); }
 
+.misprint-text{
+	display: none;
+}
+body.card-misprint .misprint-text{
+	display: block;
+	-webkit-font-smoothing: antialiased;
+	position: absolute;
+	top: 18px;
+	left: 120px;
+	transform: rotate(54deg);
+	margin: 0;
+	width: 800px;
+	transform-origin: left top;
+	opacity: .9;
+}
+body.card-misprint .misprint-text img{
+	display: block;
+	width: 100%;
+}
+
 /*# sourceMappingURL=styles.css.map */
