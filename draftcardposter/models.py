@@ -26,6 +26,7 @@ POSITIONS = (
         ('DL', 'Defensive Lineman'),
         ('NT', 'Nose Tackle'),
         ('FS', 'Free Safety'),
+        ('BL', 'Bandleader'),
         )
 
 class Player(models.Model):
