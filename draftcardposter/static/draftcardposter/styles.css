@@ -156,16 +156,24 @@ body {
   bottom: 0;
   background: #ccc; }
 
-.special {
+.special,
+.irrelevant {
   display: none;
   -webkit-font-smoothing: antialiased;
   margin: 0 0 24px;
   font-family: "Hanken Sans ExtraBold";
   font-size: 20px;
-  letter-spacing: 2.45em;
   line-height: 22px;
   text-transform: uppercase;
   color: #e9d87c; }
+
+.special{
+  letter-spacing: 2.45em;
+}
+.irrelevant {
+  letter-spacing: 1.425em;
+  white-space: nowrap;
+}
 
 .pick,
 .position,
@@ -683,7 +691,9 @@ body.gold #front {
   background-image: -webkit-repeating-linear-gradient(67deg, #472819 0%, #472819 2%, #d99e4c 23%, #a87b32 29%, #865c25 33%, #e2b566 61%, #efdf80 66%, #9f7c3c 79%, #2c1b14 95%, #2c1b14 100%); }
 body.gold #back {
   background-image: -webkit-repeating-linear-gradient(143deg, #472819 0%, #472819 2%, #d99e4c 23%, #a87b32 29%, #865c25 33%, #e2b566 61%, #efdf80 66%, #9f7c3c 79%, #2c1b14 95%, #2c1b14 100%); }
-
+body.mr-irrelevant .irrelevant {
+  display: block;
+}
 .misprint-text{
 	display: none;
 }
