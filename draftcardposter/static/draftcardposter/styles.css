@@ -145,8 +145,11 @@ body {
   padding: 20px;
   background-image: url(draft-bg.jpg);
   background-position: center;
-  background-size: 1400px;
-  -webkit-background-size: 1400px; }
+  background-size: cover;
+  -webkit-background-size: cover; }
+
+.best-value #back .content {
+  background-image: url(draft-bg-white.jpg);}
 
 .background-image {
   position: absolute;
@@ -157,23 +160,27 @@ body {
   background: #ccc; }
 
 .special,
-.irrelevant {
+.irrelevant,
+.value {
   display: none;
   -webkit-font-smoothing: antialiased;
   margin: 0 0 24px;
   font-family: "Hanken Sans ExtraBold";
   font-size: 20px;
   line-height: 22px;
-  text-transform: uppercase;
-  color: #e9d87c; }
+  text-transform: uppercase;}
 
 .special{
   letter-spacing: 2.45em;
-}
+  color: #e9d87c;}
 .irrelevant {
   letter-spacing: 1.425em;
   white-space: nowrap;
-}
+  color: #e9d87c;}
+.value{
+  letter-spacing: 2.125em;
+  white-space: nowrap;
+  color: #444;}
 
 .pick,
 .position,
@@ -193,6 +200,10 @@ body {
 
 .position {
   color: #fff; }
+
+
+.best-value .position {
+  color: #444; }
 
 .back-name {
   -webkit-font-smoothing: antialiased;
@@ -692,10 +703,11 @@ body.gold #front {
 body.gold #back {
   background-image: -webkit-repeating-linear-gradient(143deg, #472819 0%, #472819 2%, #d99e4c 23%, #a87b32 29%, #865c25 33%, #e2b566 61%, #efdf80 66%, #9f7c3c 79%, #2c1b14 95%, #2c1b14 100%); }
 body.mr-irrelevant .irrelevant {
-  display: block;
-}
+  display: block;}
+body.best-value .value {
+  display: block;}
 .misprint-text{
-	display: none;
+  display: none;
 }
 body.card-misprint .misprint-text{
 	display: block;

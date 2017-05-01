@@ -8,7 +8,7 @@
     </head>
     <body class="
         pick-{{ team|teamcssclass }}
-        {% if p and p.data and p.data.is_best_value_pick %}pick-best-value{% endif %}
+        {% if p and p.data and p.data.is_best_value_pick %}best-value{% endif %}
         {% if misprint %}card-misprint{% endif %}
         {% if overall == '253' %}mr-irrelevant{% endif %}
         ">
@@ -46,6 +46,7 @@
 						<div class="top-content">
                             <h3 class="special">EXCLUSIVE</h3>
                             <h3 class="irrelevant">MR IRRELEVANT</h3>
+                            <h3 class="value">BEST VALUE</h3>
                             <h2 class="pick">Selected {{ overall }}<sup>{{ overall|ordinal_suffix }}</sup> Overall</h2>
 							<h1 class="back-name">
 								<span id="js-back-first-name" class="line-name">{{ firstname }}</span>
