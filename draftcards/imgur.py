@@ -62,6 +62,9 @@ class Imgur:
         ret = self.client.upload_from_url(url, config, anon=False)
         return ret
 
+    def album_add_images(self, album_id, ids, *args, **kwargs):
+        return self.client.album_add_images(album_id, ids, *args, **kwargs)
+
 
 if __name__ == "__main__":
     import sys
