@@ -552,13 +552,13 @@ body.pick-jets #back {
   background-image: -webkit-repeating-linear-gradient(75deg, #070e0c 0%, black 2%, #1f3e35 23%, #172d26 50%, #397161 61%, #4a937e 66%, #376e5e 79%, #1f3e35 95%, #0e1c18 100%); }
 body.pick-jets .first-name::before,
 body.pick-jets .last-name::before {
-  color: #97233F; }
+  color: #306052; }
 body.pick-jets .team-logo {
   background-image: url("logos/jets_logo.png"); }
 body.pick-jets .line-name {
-  color: #97233F; }
+  color: #306052; }
 body.pick-jets .stat-group .big {
-  color: #97233F; }
+  color: #306052; }
 
 body.pick-raiders #front {
   background-image: -webkit-repeating-linear-gradient(133deg, #666f73 0%, #586063 2%, #8a9397 23%, #707a7e 29%, #7d878b 33%, #b3b8bb 61%, #dbdedf 66%, #b0b6b9 79%, #8a9397 95%, #707a7e 100%); }
@@ -566,13 +566,13 @@ body.pick-raiders #back {
   background-image: -webkit-repeating-linear-gradient(75deg, #666f73 0%, #586063 2%, #8a9397 23%, #7d878b 50%, #b3b8bb 61%, #ced1d3 66%, #b0b6b9 79%, #8a9397 95%, #707a7e 100%); }
 body.pick-raiders .first-name::before,
 body.pick-raiders .last-name::before {
-  color: #97233F; }
+  color: #A5ACAF; }
 body.pick-raiders .team-logo {
   background-image: url("logos/raiders_logo.png"); }
 body.pick-raiders .line-name {
-  color: #97233F; }
+  color: #A5ACAF; }
 body.pick-raiders .stat-group .big {
-  color: #97233F; }
+  color: #A5ACAF; }
 
 body.pick-eagles #front {
   background-image: -webkit-repeating-linear-gradient(133deg, black 0%, black 2%, #001115 23%, black 29%, black 33%, #005062 61%, #008fae 66%, #004c5c 79%, #001115 95%, black 100%); }
