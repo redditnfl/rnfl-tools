@@ -260,5 +260,6 @@ class PlayerCard(View):
                 if finders.find(photo):
                     context['photo'] = photo
 
-            return render(request, 'draftcardposter/card-layout.html', context=context)
+            settings = Settings.objects.all()[0]
+            return render(request, 'draftcardposter/' + settings.layout, context=context)
 

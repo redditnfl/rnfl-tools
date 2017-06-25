@@ -27,6 +27,8 @@ POSITIONS = (
         ('NT', 'Nose Tackle'),
         ('FS', 'Free Safety'),
         ('BL', 'Bandleader'),
+        ('DL-LB', 'Defensive Lineman/Linebacker'),
+        ('WR-TE', 'Wide Receiver/Tight End'),
         )
 
 class Player(models.Model):
@@ -59,6 +61,7 @@ class Settings(models.Model):
     prio_range_def = models.CharField(max_length=100)
     posting_enabled = models.BooleanField(default=True)
     live_thread_id = models.CharField(max_length=60, blank=True)
+    layout = models.CharField(max_length=100, default='card-layout.html')
 
 
 class Priority(models.Model):
@@ -70,9 +73,10 @@ class Priority(models.Model):
     prio4 = models.CharField(max_length=30)
     prio5 = models.CharField(max_length=30)
     prio6 = models.CharField(max_length=30)
+    prio7 = models.CharField(max_length=30)
 
     def __str__(self):
-        return "{p.position}: {p.prio1}, {p.prio2}, {p.prio3}, {p.prio4}, {p.prio5}, {p.prio6}".format(p=self)
+        return "{p.position}: {p.prio1}, {p.prio2}, {p.prio3}, {p.prio4}, {p.prio5}, {p.prio6}, {p.prio7}".format(p=self)
 
     def as_list(self):
         r = []
@@ -84,10 +88,12 @@ class Priority(models.Model):
             r.append(self.prio3)
         if self.prio4:
             r.append(self.prio4)
-        if self.prio4:
+        if self.prio5:
             r.append(self.prio5)
-        if self.prio4:
+        if self.prio6:
             r.append(self.prio6)
+        if self.prio7:
+            r.append(self.prio7)
         return r
 
     def merge_with(self, other):
@@ -101,4 +107,5 @@ class Priority(models.Model):
         self.prio4 = m[3] if len(m) > 3 else None
         self.prio5 = m[4] if len(m) > 4 else None
         self.prio6 = m[5] if len(m) > 5 else None
+        self.prio7 = m[6] if len(m) > 6 else None
         return self
