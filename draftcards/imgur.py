@@ -1,10 +1,28 @@
 #!/usr/bin/env python
+import time
 import json
 from imgurpython import ImgurClient
 import os.path
 import webbrowser
+from imgurpython.helpers.error import ImgurClientRateLimitError
+from requests.exceptions import ConnectionError, ConnectTimeout
 
 CREDENTIALS_FILE = 'imgur_client_secret.json'
+
+def imgur_retry(f):
+    import time
+    def decorated(*args, **kwargs):
+        while True:
+            try:
+                return f(*args, **kwargs)
+                break
+            except ImgurClientRateLimitError as e:
+                print("Rate Limit Error, sleeping 5 minutes (%s)" % e)
+                time.sleep(300)
+            except (ConnectionError, ConnectTimeout) as e:
+                print("Connection issue, sleeping 10 seconds (%s)" % e)
+                time.sleep(10)
+    return decorated
 
 
 class Imgur:
@@ -39,6 +57,7 @@ class Imgur:
             json.dump(credentials, fp)
         self.client.set_user_auth(credentials['access_token'], credentials['refresh_token'])
 
+    @imgur_retry
     def get_or_make_album(self, albumtitle):
         for album in self.client.get_account_albums('me'):
             if album.title == albumtitle:
@@ -46,6 +65,15 @@ class Imgur:
         ret = self.client.create_album({'title': albumtitle})
         return ret['id']
 
+    @imgur_retry
+    def get_album_images(self, album_id):
+        return self.client.get_album_images(album_id)
+
+    @imgur_retry
+    def update_album(self, album_id, fields):
+        self.client.update_album(album_id, fields)
+
+    @imgur_retry
     def upload(self, path, albumtitle, title=None):
         album_id = self.get_or_make_album(albumtitle)
         config = {'album': album_id}
@@ -54,6 +82,7 @@ class Imgur:
         ret = self.client.upload_from_path(path, config, anon=False)
         return ret
 
+    @imgur_retry
     def upload_url(self, url, albumtitle, title=None):
         album_id = self.get_or_make_album(albumtitle)
         config = {'album': album_id}
@@ -62,6 +91,8 @@ class Imgur:
         ret = self.client.upload_from_url(url, config, anon=False)
         return ret
 
+
+    @imgur_retry
     def album_add_images(self, album_id, ids, *args, **kwargs):
         return self.client.album_add_images(album_id, ids, *args, **kwargs)
 
