@@ -4,7 +4,7 @@
 <html>
     <head>
         <title>{{ name }} /r/nfl draft card</title>
-        <link rel="stylesheet" type="text/css" href="{% static "draftcardposter/styles.css" %}">
+        <link rel="stylesheet" type="text/css" href="{% static "draftcardposter/top100styles.css" %}">
     </head>
     <body class="
         pick-{{ team|teamcssclass }}
@@ -36,7 +36,7 @@
                                 <span id="js-last-name" class="last-name" data-name="{{ lastname }}">{{ lastname }}</span>
 							</h1>
 						</div>
-                        <div class="pick-number">#{{ p.data.rank }}</div>
+                        <div class="pick-number">#{{ p.data.Rank }}</div>
                         <div class="team-logo"></div>
 					</div>
                     <div class="misprint-text"><img src="{% static 'draftcardposter/misprint.png' %}"/></div>

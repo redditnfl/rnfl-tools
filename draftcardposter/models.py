@@ -27,8 +27,14 @@ POSITIONS = (
         ('NT', 'Nose Tackle'),
         ('FS', 'Free Safety'),
         ('BL', 'Bandleader'),
-        ('DL-LB', 'Defensive Lineman/Linebacker'),
-        ('WR-TE', 'Wide Receiver/Tight End'),
+        ('4-3 DT', '4-3 Defensive Tackle'),
+        ('4-3 DE', '4-3 Defensive End'),
+        ('4-3 MLB', '4-3 Middle Linebacker'),
+        ('4-3 OLB', '4-3 Outside Linebacker'),
+        ('3-4 DT', '3-4 Defensive Tackle'),
+        ('3-4 DE', '3-4 Defensive End'),
+        ('3-4 ILB', '3-4 Inside Linebacker'),
+        ('3-4 OLB', '3-4 Outside Linebacker'),
         )
 
 class Player(models.Model):
