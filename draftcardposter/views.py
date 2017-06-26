@@ -207,7 +207,7 @@ def beststats(player, pos):
     for p in prio.merge_with(default).as_list():
         if p in player.data and player.data[p]:
             stats.append((p, player.data[p]))
-    return stats[:3]
+    return stats
 
 class RandomCard(View):
     def get(self, request, *args, **kwargs):

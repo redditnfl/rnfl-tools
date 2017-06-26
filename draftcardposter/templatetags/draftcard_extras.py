@@ -5,7 +5,17 @@ register = template.Library()
 
 @register.filter
 @stringfilter
-def statname(value):
+def statname(statname, value):
+    """
+    >>> statname('Drops', 1)
+    'Drop'
+    >>> statname('Drops', 0)
+    'Drops'
+    >>> statname('Drops', 2)
+    'Drops'
+    >>> statname('Rec-TD')
+    'Rec. TD'
+    """
     statnames = {
             'hand_size': 'Hand Size',
             'arm_length': 'Arm Length',
@@ -17,11 +27,16 @@ def statname(value):
             'shuttle': 'Short Shuttle',
             '3cone': '3-cone drill',
             '60ydshuttle': '60 yard shuttle',
+            'Pass-Int': 'Interceptions',
             }
-    if value in statnames:
-        return statnames[value]
+    if statname in statnames:
+        statname = statnames[statname]
     else:
-        return value.replace("_", " ").title()
+        statname = statname.replace("_", " ")#.title()
+    if str(value) in ('1', '1.0') and statname.endswith('s'):
+        print("##########################################\n%s -> %s (%s)\n##########################################" % (statname, statname[:-1], value))
+        statname  = statname[:-1]
+    return statname
 
 @register.filter
 @stringfilter
@@ -106,3 +121,6 @@ def ordinal_suffix(n):
   else:
     return 'th'
 
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod()

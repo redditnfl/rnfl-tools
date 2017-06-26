@@ -6,6 +6,9 @@
 @font-face {
   font-family: "Hanken Sans ExtraBold";
   src: url(hanken-extra-bold.otf); }
+@font-face {
+  font-family: "Evogria";
+  src: url(Evogria.otf); }
 /*
 @font-face {
   font-family: "Hanken Sans Light";
@@ -66,11 +69,11 @@ body {
   bottom: 0;
   left: 0;
   right: 0;
-  padding: 0 30px 0 0; }
+  padding: 0; }
 
 .name {
   -webkit-font-smoothing: antialiased;
-  font-family: "Lickety Split";
+  font-family: "Evogria";
   line-height: 0;
   color: #fff;
   font-weight: 300;
@@ -79,7 +82,7 @@ body {
 .name .first-name,
 .name .last-name {
   display: block;
-  text-align: right;
+  text-align: center;
   white-space: nowrap; }
 .name .first-name.done,
 .name .last-name.done {
@@ -102,20 +105,22 @@ body {
   font-size: 114px;
   line-height: 20px;
   letter-spacing: .01em;
-  transform: skewY(-12deg) skewX(12deg);
-  -webkit-transform: skewY(-12deg) skewX(12deg); }
+/*  transform: skewY(-12deg) skewX(12deg);
+  -webkit-transform: skewY(-12deg) skewX(12deg);*/
+}
 
 .last-name {
   position: relative;
   z-index: 9;
   display: block;
   margin-top: 50px;
-  margin-left: 20px;
-  margin-bottom: 90px;
+/*  margin-left: 20px; */
+/*  margin-bottom: 90px; */
   font-size: 166px;
   line-height: 1em;
-  transform: skewY(-12deg) skewX(12deg);
-  -webkit-transform: skewY(-12deg) skewX(12deg); }
+/*  transform: skewY(-12deg) skewX(12deg);
+  -webkit-transform: skewY(-12deg) skewX(12deg);*/
+}
 
 .pick-number {
   position: absolute;
@@ -123,7 +128,7 @@ body {
   right: 15px;
   font-size: 40px;
   -webkit-font-smoothing: antialiased;
-  font-family: "Lickety Split";
+  font-family: "Evogria";
   line-height: 0;
   color: #fff;
   line-height: 0;
@@ -132,23 +137,22 @@ body {
 .team-logo {
   display: block;
   position: absolute;
-  bottom: 20px;
-  right: 20px;
-  height: 300px;
-  width: 75px;
+  top: 20px;
+  left: 20px;
+  height: 70px;
+  width: 70px;
   z-index: 10;
-  background-position: bottom center;
+  background-position: top center;
   background-repeat: no-repeat;
-  background-size: 75px; }
+  background-size: 70px; }
 
 #back .content {
   padding: 20px;
-  background-color: #222021;
-  /*
-  background-image: url(draft-bg.jpg);
+/*  background-color: #222021; */
+  background-image: url(backgrounds/nfl_football.jpg);
   background-position: center;
   background-size: cover;
-  -webkit-background-size: cover; */}
+  -webkit-background-size: cover; }
 
 .best-value #back .content {
   background-image: url(draft-bg-white.jpg);}
@@ -163,7 +167,8 @@ body {
 
 .special,
 .irrelevant,
-.value {
+.value,
+.top100header {
   display: none;
   -webkit-font-smoothing: antialiased;
   margin: 0 0 24px;
@@ -173,7 +178,7 @@ body {
   text-transform: uppercase;}
 
 .special{
-  letter-spacing: 2.45em;
+  letter-spacing: 0.92056em;
   color: #e9d87c;}
 .irrelevant {
   letter-spacing: 1.425em;
@@ -183,6 +188,10 @@ body {
   letter-spacing: 2.125em;
   white-space: nowrap;
   color: #444;}
+.top100header {
+  letter-spacing: 3.520em;
+  white-space: nowrap;
+  color: #e9d87c;}
 
 .pick,
 .position,
@@ -193,7 +202,8 @@ body {
   font-family: "Hanken Sans Light";
   letter-spacing: .05em;
   color: #757679;
-  font-size: 24px; }
+  font-weight: bold;
+  font-size: 28px; }
 
 .pick,
 .stat-header,
@@ -245,9 +255,9 @@ body {
   padding-right: 10px;
   margin: 0 0 4px;
   font-family: "Hanken Sans ExtraBold";
-  font-size: 60px;
+  font-size: 45px;
   letter-spacing: 0;
-  line-height: 60px;
+  line-height: 45px;
   text-transform: uppercase; }
 
 body.pick-cardinals #front {
@@ -702,6 +712,11 @@ body.pick-redskins .line-name {
 body.pick-redskins .stat-group .big {
   color: #ffb612; }
 
+.top100header {
+    display: block;
+}
+body.gold .top100header {
+  display: none; }
 body.gold .special {
   display: block; }
 body.gold #front {

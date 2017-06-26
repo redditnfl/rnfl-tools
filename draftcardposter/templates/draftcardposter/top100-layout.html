@@ -36,7 +36,7 @@
                                 <span id="js-last-name" class="last-name" data-name="{{ lastname }}">{{ lastname }}</span>
 							</h1>
 						</div>
-                        <div class="pick-number">#{{ p.data.Rank }}</div>
+                        <div class="pick-number">#{{ p.data.rank }}</div>
                         <div class="team-logo"></div>
 					</div>
                     <div class="misprint-text"><img src="{% static 'draftcardposter/misprint.png' %}"/></div>
@@ -44,7 +44,8 @@
         <div id="back" class="card">
 					<div class="content">
 						<div class="top-content">
-                            <h3 class="special">EXCLUSIVE</h3>
+                            <h3 class="top100header">TOP 100</h3>
+                            <h3 class="special">TOP 100 EXCLUSIVE</h3>
                             <h3 class="irrelevant">MR IRRELEVANT</h3>
                             <h3 class="value">BEST VALUE</h3>
 							<h1 class="back-name">
@@ -55,12 +56,12 @@
 						</div>
 						<div class="bottom-content">
                             {% if stats %}
-							<h2 class="stat-header">Stats</h2>
+                            <!-- <h2 class="stat-header">Stats</h2>-->
                             {% endif %}
-                            {% for stat, value in stats %}
+                            {% for statname, statvalue in stats %}
 							<div class="stat-group">
-                                <span class="big">{{ value|formatvalue:stat }}</span>
-                                <span class="small">{{ stat|statname }}</span>
+                                <span class="big">{{ statvalue|formatvalue:statname }}</span>
+                                <span class="small">{{ statname|statname:statvalue }}</span>
 							</div>
                             {% endfor %}
                             {% if p.data.height_in %}
