@@ -1,4 +1,3 @@
-from django.core import serializers
 from django import http
 # Copyright 2013 AJJ <http://stackoverflow.com/users/377917/ajj>
 # Copyright 2017 Jonas Häggqvist
@@ -11,7 +10,7 @@ from django import http
 class AJAXListMixin(object):
 
     def dispatch(self, request, *args, **kwargs):
-         if not request.is_ajax() and False:
+         if not request.is_ajax():
              raise http.Http400("This is an ajax view, friend.")
          return super(AJAXListMixin, self).dispatch(request, *args, **kwargs)
 
@@ -25,7 +24,7 @@ class AJAXListMixin(object):
 class AJAXSingleObjectMixin(object):
 
     def dispatch(self, request, *args, **kwargs):
-        if not request.is_ajax() and False:
+        if not request.is_ajax():
             raise http.Http400("This is an ajax view, friend.")
         return super(AJAXSingleObjectMixin, self).dispatch(request, *args, **kwargs)
 
