@@ -13,8 +13,10 @@ def statname(statname, value):
     'Drops'
     >>> statname('Drops', 2)
     'Drops'
-    >>> statname('Rec-TD')
+    >>> statname('Rec-TD', 1)
     'Rec. TD'
+    >>> statname('Fumbles Forced', 1)
+    'Fumble Forced'
     """
     statnames = {
             'hand_size': 'Hand Size',
@@ -28,14 +30,17 @@ def statname(statname, value):
             '3cone': '3-cone drill',
             '60ydshuttle': '60 yard shuttle',
             'Pass-Int': 'Interceptions',
+            'Rec-TD': 'Rec. TDs'
             }
     if statname in statnames:
         statname = statnames[statname]
     else:
         statname = statname.replace("_", " ")#.title()
-    if str(value) in ('1', '1.0') and statname.endswith('s'):
-        print("##########################################\n%s -> %s (%s)\n##########################################" % (statname, statname[:-1], value))
-        statname  = statname[:-1]
+    if str(value) in ('1', '1.0'):
+        if statname.endswith('s'):
+            statname  = statname[:-1]
+        elif statname.startswith("Fumbles"):
+            statname = statname.replace("Fumbles", "Fumble")
     return statname
 
 @register.filter
