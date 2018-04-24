@@ -241,6 +241,21 @@ class RandomCard(View):
             'fmt': 'png'
             })
 
+def subdivide_stats(data):
+    """
+    If a key contains a ., create a sub-dict with the first part as parent key
+    """
+    ret = {}
+    for key, value in data.items():
+        if '.' in key:
+            parent, subkey = key.split('.', 2)
+            if parent not in ret:
+                ret[parent] = {}
+            ret[parent][subkey] = value
+        else:
+            ret[key] = value
+    return ret
+
 class PlayerCard(View):
 
     def get(self, request, overall, team, pos, name, college, fmt, *args, **kwargs):
@@ -256,7 +271,7 @@ class PlayerCard(View):
             if misprint:
                 name = name.replace('MISPRINT ','')
             firstname, lastname = split_name(name)
-            stats = beststats(player, pos)
+            stats = subdivide_stats(player.data)
             context = {
                     'p': player,
                     'position': pos,
