@@ -61,7 +61,7 @@
                             {% for stat, value in stats %}
 							<div class="stat-group">
                                 <span class="big">{{ value|formatvalue:stat }}</span>
-                                <span class="small">{{ stat|statname }}</span>
+                                <span class="small">{{ stat|statname:value }}</span>
 							</div>
                             {% endfor %}
                             {% if p.data.height_in %}

@@ -4,6 +4,7 @@ from django.contrib.staticfiles import finders
 from praw import Reddit
 from praw.const import API_PATH
 from django.urls import reverse
+from django import http
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import last_modified
@@ -27,8 +28,6 @@ from urllib.request import urlopen
 def add_common_context(context):
     context['positions'] = Player.POSITIONS
     context['teams'] = sorted(nflteams.fullinfo.items(), key=lambda v: v[1]['fullname'])
-    context['rounds'] = range(1, 8)
-    context['picks'] = range(1, 44)
     context['settings'] = Settings.objects.all()[0]
     context['msgs'] = []
     return context
@@ -51,7 +50,7 @@ class MissingPhotos(generic.TemplateView):
         context = super(MissingPhotos, self).get_context_data(*args, **kwargs)
         players = []
         for player in Player.objects.all():
-            photo = 'draftcardposter/playerimgs/' + player.data['filename'] + '.jpg'
+            photo = 'draftcardposter/2018-draft/' + player.data['filename'] + '.jpg'
             if not finders.find(photo):
                 players.append(player)
         context['players'] = players
@@ -75,6 +74,19 @@ def remove_na(d):
         del(d[k])
     return d
 
+@method_decorator(login_required, name='dispatch')
+class Picks(View):
+    def get(self, request, *args, **kwargs):
+        settings = Settings.objects.all()[0]
+        if not request.is_ajax() and False:
+            raise http.Http400("This is an ajax view, friend.")
+        data = {
+                'current_year': 2018,
+                'next_pick': 36,
+                'picks': draft.drafts
+                }
+        return http.JsonResponse(data)
+
 @method_decorator(transaction.atomic, name='dispatch')
 class UpdatePlayers(View):
 
@@ -87,6 +99,8 @@ class UpdatePlayers(View):
         i = 0
         for prio in sheets.get_range_dict(settings.prio_range_def):
             lowercase_dict = dict([(k.lower(), v) for (k,v) in prio.items()])
+            if len(lowercase_dict) == 0 or len(lowercase_dict['position']) == 0:
+                continue
             p = Priority(**lowercase_dict)
             p.save()
             
@@ -175,7 +189,9 @@ class PreviewPost(View):
         team = nflteams.fullinfo[request.POST['team']]
         context['team'] = team
 
-        overall = draft.overall(2017, int(context['round']), int(context['pick']))
+        overall = draft.overall(2018, int(context['round']), int(context['pick']))
+        if overall is None:
+            raise Exception("Pick {round}.{pick} does not exist".format(**context))
         context['overall'] = overall
 
         title = "Round {round} - Pick {pick}: {name}, {position}, {college} ({team[fullname]})".format(
@@ -183,7 +199,7 @@ class PreviewPost(View):
                 )
         context['title'] = title
 
-        pick_type = draft.pick_type(2017, int(context['round']), int(context['pick']))
+        pick_type = draft.pick_type(2018, int(context['round']), int(context['pick']))
         if pick_type and pick_type in (draft.FORFEITED, draft.UNKNOWN, draft.MOVED):
             context['msgs'].append(('warning', 'I don\'t think round {round} has a pick #{pick}. Are you sure?'.format(**context)))
         elif pick_type and pick_type == draft.COMP:
@@ -256,7 +272,7 @@ class PlayerCard(View):
                     }
             context['photo'] = 'draftcardposter/draft-empty.jpg'
             if player and 'filename' in player.data:
-                photo = 'draftcardposter/playerimgs/' + player.data['filename'] + '.jpg'
+                photo = 'draftcardposter/2018-draft/' + player.data['filename'] + '.jpg'
                 if finders.find(photo):
                     context['photo'] = photo
 

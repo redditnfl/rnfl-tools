@@ -19,6 +19,7 @@ from . import views
 
 urlpatterns = [
     url(r'^players$', views.PlayerList.as_view(), name='player-list'),
+    url(r'^picks$', views.Picks.as_view(), name='picks'),
     url(r'^update$', views.UpdatePlayers.as_view(), name='update-players'),
     url(r'^preview$', views.PreviewPost.as_view(), name='preview-post'),
     url(r'^player/(?P<pk>[0-9]+)$', views.PlayerDetail.as_view(), name='player-detail'),
