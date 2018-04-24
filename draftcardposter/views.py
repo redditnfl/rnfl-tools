@@ -9,6 +9,7 @@ from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import last_modified
 from django.utils.decorators import method_decorator
+from django.core.cache import cache
 from datetime import datetime, timezone
 from pprint import pprint
 from django.views import generic, View
@@ -122,6 +123,7 @@ class UpdatePlayers(View):
         context['msgs'].append(('success', 'Updated %d player%s' % (i, '' if i==1 else 's')))
         settings.last_updated = datetime.now(timezone.utc)
         settings.save()
+        cache.clear()
         return render(request, 'draftcardposter/index.html', context=context)
 
 def player_if_found(name, college):
@@ -263,7 +265,11 @@ class PlayerCard(View):
             sshot = Screenshot(1260, 820)
             url = reverse('player-card', kwargs={'overall':overall, 'team':team, 'pos':pos, 'name':name, 'college':college, 'fmt':'html'})
             fullurl = request.build_absolute_uri(url)
-            png = sshot.sshot_url_to_png(fullurl, 5.0)
+            png = cache.get(fullurl)
+            if not png:
+                print("PNG not cached, regenerating")
+                png = sshot.sshot_url_to_png(fullurl, 5.0)
+                cache.set(fullurl, png, 300)
             return HttpResponse(png, content_type="image/png")
         else:
             player = player_if_found(name, college)
