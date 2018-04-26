@@ -282,11 +282,14 @@ class PlayerCard(View):
                 name = name.replace('MISPRINT ','')
             firstname, lastname = split_name(name)
             stats = subdivide_stats(player.data)
+            round_, pick = draft.round_pick(2018, int(overall))
             context = {
                     'p': player,
                     'position': pos,
                     'position_long': dict(Player.POSITIONS)[pos],
                     'overall': overall,
+                    'round': round_,
+                    'pick': pick,
                     'name': name,
                     'firstname': firstname,
                     'lastname': lastname,
