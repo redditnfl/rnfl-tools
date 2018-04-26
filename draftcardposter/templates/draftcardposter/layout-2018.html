@@ -1,69 +1,53 @@
 {% load static %}
 {% load draftcard_extras %}
 <!DOCTYPE html>
+
 <html>
-<head>
-  <link rel="stylesheet" href="https://use.typekit.net/ikq5fbd.css">
-  <link rel="stylesheet" href="{% static "draftcardposter/draft-2018/styles.css" %}">
-  <title>/r/nfl 2018 Draft Card - {{ firstname }} {{ lastname }}</title>
-</head>
-<body class="{{ team|teamcssclass }}" data-overall="{{ overall }}">
-  <div class="draft-card-contain">
-    <div class="photo">
-      <div class="photo-contain" style=
-      "background-image: url({% static photo %});"></div>
-      <div class="name-contain">
-        <div class="first">
-          {{ firstname }}
+  <head>
+    <link rel="stylesheet" href="https://use.typekit.net/ikq5fbd.css"/>
+    <link rel="stylesheet" href="{% static "draftcardposter/draft-2018/styles.css" %}">
+    <title>/r/nfl 2018 Draft Card - {{ firstname }} {{ lastname }}</title>
+    <style>
+.logo {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  z-index: 3;
+  height: 80px;
+  width: 80px;
+  background-image: url("{% static "draftcardposter/draft-2018/logos-160x160.png" %}");
+  background-repeat: no-repeat;
+  background-size: 80px; }
+    </style>
+  </head>
+  <body class="{{ team|teamcssclass }} JS-card-contain" data-overall="{{ overall }}">
+    <div class="draft-card-contain">
+      <div class="photo">
+        <div class="photo-contain JS-player-image" style="background-image: url({% static photo %});"></div>
+        <div class="name-contain JS-name-contain">
+          <div class="first JS-text-bound" style="font-size: 92px; line-height: 86px; letter-spacing: .08em;">{{ firstname }}</div><br />
+          <div class="last JS-text-bound" style="font-size: 92px; line-height: 86px; letter-spacing: .08em;">{{ lastname }}</div>
         </div>
-        <div class="last">
-          {{ lastname }}
-        </div>
+        <div class="credit">r/NFL</div>
+        <div class="logo"></div>
       </div>
-    </div>
-    <div class="basic-info">
-      <div class="line">
-        <span class="player_position left">
-            {{ position }} — {{ college }}
-        </span>
-        <span class="draft_position right">
-            {{ overall }}{{ overall|ordinal_suffix }} overall
-        </span>
-      </div>
-      <div class="line">
-        <span class="player_size left">
-            {{ stats.height_in|formatvalue:'height_in' }} — 
-            {{ stats.weight_lbs|formatvalue:'weight_lbs' }}
-        </span>
-        <span class="draft_team right">
-            {{ team.fullname }}
-        </span>
-      </div>
-    </div>
-    <div class="random-fact">
-      <div class="left">
-        #factoid
-      </div>
-      <div class="right" id="factoid">
-      </div>
-    </div>
-    <div class="stats">
-      <div class="left">
-        Stats
-      </div>
-      <div class="right">
+      <div class="basic-info">
+        <div class="line"><span class="player_position left">{{ position }} &mdash; {{ college }}</span><span class="draft_position right">{{ overall }}{{ overall|ordinal_suffix }} overall</span></div>
+        <div class="line"><span class="player_size left">{{ stats.height_in|formatvalue:'height_in' }} — {{ stats.weight_lbs|formatvalue:'weight_lbs' }}</span><span class="draft_team right">{{ team.fullname }}</span></div>
+        <div class="stats">
+          <div class="stats-contain">
 
 {% if stats.combine.invite == 'TRUE' %}
 {% for stat, value in stats.combine|order_stats:priorities|slice:"0:3" %}
     {% if value and stat != 'invite' %}
-        <div class="stat">
-          <div class="header">
-              {{ stat|statname:value }} - Combine
-          </div>
-          <div class="number">
-              {{ value|formatvalue:stat }}
-          </div>
-        </div>
+            <div class="stat">
+              <div class="header">
+                {{ stat|statname:value }} - Combine
+              </div>
+              <div class="number">
+                {{ value|formatvalue:stat }}
+              </div>
+            </div>
     {% endif %}
 {% endfor %}
 {% endif %}
@@ -71,28 +55,27 @@
 {% if stats.proday.date != 'FALSE' %}
 {% for stat, value in stats.proday|order_stats:priorities|slice:"0:3" %}
     {% if value and stat != 'date' %}
-        <div class="stat">
-          <div class="header">
-              {{ stat|statname:value }} - Proday
-          </div>
-          <div class="number">
-              {{ value|formatvalue:stat }}
-          </div>
-        </div>
+            <div class="stat">
+              <div class="header">
+                {{ stat|statname:value }} - Proday
+              </div>
+              <div class="number">
+                {{ value|formatvalue:stat }}
+              </div>
+            </div>
     {% endif %}
 {% endfor %}
 {% endif %}
 
+          </div>
+        </div>
+      </div>
+      <div class="random-fact">
+        <div class="left">#factoid</div>
+        <div class="right" id="factoid"></div>
       </div>
     </div>
-  </div>
-  {% comment "debug" %}
-  <pre>
-  {{ stats.combine|order_stats:priorities|pprint }}
-  {{ stats.proday|order_stats:priorities|pprint }}
-  </pre>
-  {% endcomment %}
-  <script src="{% static "draftcardposter/draft-2018/app.js" %}"></script>
-  <script src="{% static "draftcardposter/draft-2018/factoid.js" %}"></script>
-</body>
+    <script src="{% static "draftcardposter/draft-2018/app.js" %}"></script>
+    <script src="{% static "draftcardposter/draft-2018/factoid.js" %}"></script>
+  </body>
 </html>
