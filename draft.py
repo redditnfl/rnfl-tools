@@ -13,6 +13,7 @@ def parsedrafts(s):
     for ds in s.split("---"):
         ds = ds.strip().split("\n")
         year = int(ds[0])
+        ovr = 0
         draft = []
         for rs in ds[1:]:
             round_no, picks = rs.split(": ")
@@ -23,7 +24,11 @@ def parsedrafts(s):
                     flag = ps[-1]
                     ps = ps[:-1]
                 pick = int(ps)
-                rnd.append((pick, flag))
+                if flag is None or flag not in (FORFEITED, MOVED):
+                    ovr += 1
+                    rnd.append((pick, flag, ovr))
+                else:
+                    rnd.append((pick, flag, None))
             draft.append(rnd)
         drafts[year] = draft
     return drafts
@@ -36,7 +41,7 @@ def overall(year, t_rnd, t_pick):
     rnd_no = 0
     for rnd in draft:
         rnd_no += 1
-        for pick, flag in rnd:
+        for pick, flag, ovr in rnd:
             if flag is None or flag not in (FORFEITED, MOVED):
                 overall += 1
             if rnd_no == t_rnd and pick == t_pick:
@@ -59,7 +64,7 @@ def round_pick(year, ovr):
     rnd_no = 0
     for rnd in draft:
         rnd_no += 1
-        for pick, flag in rnd:
+        for pick, flag, _ in rnd:
             if overall(year, rnd_no, pick) == ovr:
                 return rnd_no, pick
 

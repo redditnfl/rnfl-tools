@@ -51,7 +51,7 @@ class MissingPhotos(generic.TemplateView):
         context = super(MissingPhotos, self).get_context_data(*args, **kwargs)
         players = []
         for player in Player.objects.all():
-            photo = 'draftcardposter/2018-draft/' + player.data['filename'] + '.jpg'
+            photo = 'draftcardposter/draft-2018/playerimgs/' + player.data['filename'] + '.jpg'
             if not finders.find(photo):
                 players.append(player)
         context['players'] = players
@@ -138,8 +138,9 @@ class SubmitView(View):
         context = add_common_context({})
         title = request.POST.get('title', None)
         url = request.POST.get('imageurl', None)
+        overall = request.POST.get('overall', None)
 
-        if not title or not url:
+        if not title or not url or not overall:
             raise Exception("AAAAAAAAA")
 
         context['cardurl'] = url
@@ -157,6 +158,8 @@ class SubmitView(View):
         except Exception as e:
             context['msgs'].append(('danger', str(e)))
             context['msgs'].append(('danger', traceback.format_exc()))
+        s.last_submitted_overall = overall
+        s.save()
         
         return render(request, 'draftcardposter/submit.html', context=context)
 
@@ -262,13 +265,13 @@ class PlayerCard(View):
 
     def get(self, request, overall, team, pos, name, college, fmt, *args, **kwargs):
         if fmt == 'png':
-            sshot = Screenshot(1260, 820)
+            sshot = Screenshot(840, 0) # Height expands automatically
             url = reverse('player-card', kwargs={'overall':overall, 'team':team, 'pos':pos, 'name':name, 'college':college, 'fmt':'html'})
             fullurl = request.build_absolute_uri(url)
             png = cache.get(fullurl)
             if not png:
                 print("PNG not cached, regenerating")
-                png = sshot.sshot_url_to_png(fullurl, 5.0)
+                png = sshot.sshot_url_to_png(fullurl, 3.0)
                 cache.set(fullurl, png, 300)
             return HttpResponse(png, content_type="image/png")
         else:
@@ -290,10 +293,11 @@ class PlayerCard(View):
                     'team': nflteams.fullinfo[team],
                     'stats': stats,
                     'misprint': misprint,
+                    'priorities': Priority.objects.get(position=pos).merge_with(Priority.objects.get(position='Default')),
                     }
-            context['photo'] = 'draftcardposter/draft-empty.jpg'
+            context['photo'] = 'draftcardposter/draft-2018/playerimgs/some_fucking_guy.jpg'
             if player and 'filename' in player.data:
-                photo = 'draftcardposter/2018-draft/' + player.data['filename'] + '.jpg'
+                photo = 'draftcardposter/draft-2018/playerimgs/' + player.data['filename'] + '.jpg'
                 if finders.find(photo):
                     context['photo'] = photo
 

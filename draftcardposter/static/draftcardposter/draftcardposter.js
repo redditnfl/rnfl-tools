@@ -6,8 +6,8 @@ $(document).ready(function() {
         for (var i=1; i <= picks.length; i++) {
             $("#round").append($('<option>', { value: i, text: i }));
         }
-    }).done(function() {
         $("#round").selectpicker('refresh');
+    }).done(function() {
         $("#round").on("changed.bs.select",
             function(e, clickedIndex, newValue, oldValue) {
                 console.log(this.value, clickedIndex, newValue, oldValue);

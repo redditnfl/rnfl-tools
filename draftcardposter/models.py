@@ -68,6 +68,7 @@ class Settings(models.Model):
     posting_enabled = models.BooleanField(default=True)
     live_thread_id = models.CharField(max_length=60, blank=True)
     layout = models.CharField(max_length=100, default='card-layout.html')
+    last_submitted_overall = models.IntegerField(default=0)
 
 
 class Priority(models.Model):
