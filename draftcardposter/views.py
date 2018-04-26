@@ -272,7 +272,7 @@ class PlayerCard(View):
             png = cache.get(fullurl)
             if not png:
                 print("PNG not cached, regenerating")
-                png = sshot.sshot_url_to_png(fullurl, 3.0)
+                png = sshot.sshot_url_to_png(fullurl, 5.0)
                 cache.set(fullurl, png, 300)
             return HttpResponse(png, content_type="image/png")
         else:
