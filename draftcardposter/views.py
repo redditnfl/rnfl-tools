@@ -31,6 +31,7 @@ def add_common_context(context):
     context['teams'] = sorted(nflteams.fullinfo.items(), key=lambda v: v[1]['fullname'])
     context['settings'] = Settings.objects.all()[0]
     context['msgs'] = []
+    context['next_pick'] = draft.round_pick(2018, min(256, Settings.objects.all()[0].last_submitted_overall + 1))
     return context
 
 def latest_update(*args, **kwargs):

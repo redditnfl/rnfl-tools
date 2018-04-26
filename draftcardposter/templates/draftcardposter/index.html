@@ -16,7 +16,8 @@
 {% endfor %}
 <div>
 <form method="POST" action="{% url 'preview-post' %}">
-    <input type="hidden" id="last-submitted-overall" value="{{ settings.last_submitted_overall }}" disabled="disabled" />
+    <input type="hidden" id="next-round" value="{{ next_pick.0 }}" disabled="disabled" />
+    <input type="hidden" id="next-pick" value="{{ next_pick.1 }}" disabled="disabled" />
     {% csrf_token %}
     <div class="row">
         <div class="col-xs-6">
