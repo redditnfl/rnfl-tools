@@ -2,79 +2,97 @@
 {% load draftcard_extras %}
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>{{ name }} /r/nfl draft card</title>
-        <style type="text/css">
-html, body {
-    width: 800px;
-    height: 1000px;
-}
-html {
-    padding: 10px;
-    margin: 10px;
-    background-color: gray;
-}
-body {
-    font-family: sans-serif;
-    background-color: #fafaea;
-    
-}
-img {
-    filter: hue-rotate(90deg) saturate(190%);
-}
-#quip {
-    font-size: smaller;
-    font-style: italic;
-    text-align: right;
-}
-        </style>
-        <script src="{% static "draftcardposter/draft-2018.js" %}"></script>
-    </head>
-    <body>
-        <h1>{{ firstname }} {{ lastname }}, {{ position }}, {{ college }}</h1>
-        <div id="quip"></div>
-        <img src="{% static photo %}" />
-        <ul>
-            <li><b>Weight</b>: {{ stats.weight_lbs|formatvalue:"weight_lbs" }}</li>
-            <li><b>Height</b>: {{ stats.height_in|formatvalue:"height_in" }}</li>
-        </ul>
-        <table>
-        <thead>
-            <th colspan="2">Combine</th>
-        </thead>
-        <tbody>
-        <tr>
-        {% for stat, value in stats.combine.items %}
-            {% if value %}
-            <tr>
-                <td>{{ stat|statname:value }}</td>
-                <td>{{ value|formatvalue:stat }}</td>
-            </tr>
-            {% endif %}
-        {% endfor %}
-        </tbody>
-        </table>
+<head>
+  <link rel="stylesheet" href="https://use.typekit.net/ikq5fbd.css">
+  <link rel="stylesheet" href="{% static "draftcardposter/draft-2018/styles.css" %}">
+  <title>/r/nfl 2018 Draft Card - {{ firstname }} {{ lastname }}</title>
+</head>
+<body class="{{ team|teamcssclass }}" data-overall="{{ overall }}">
+  <div class="draft-card-contain">
+    <div class="photo">
+      <div class="photo-contain" style=
+      "background-image: url({% static photo %});"></div>
+      <div class="name-contain">
+        <div class="first">
+          {{ firstname }}
+        </div>
+        <div class="last">
+          {{ lastname }}
+        </div>
+      </div>
+    </div>
+    <div class="basic-info">
+      <div class="line">
+        <span class="player_position left">
+            {{ position }} — {{ college }}
+        </span>
+        <span class="draft_position right">
+            {{ overall }}{{ overall|ordinal_suffix }} overall
+        </span>
+      </div>
+      <div class="line">
+        <span class="player_size left">
+            {{ stats.height_in|formatvalue:'height_in' }} — 
+            {{ stats.weight_lbs|formatvalue:'weight_lbs' }}
+        </span>
+        <span class="draft_team right">
+            {{ team.fullname }}
+        </span>
+      </div>
+    </div>
+    <div class="random-fact">
+      <div class="left">
+        #factoid
+      </div>
+      <div class="right" id="factoid">
+      </div>
+    </div>
+    <div class="stats">
+      <div class="left">
+        Stats
+      </div>
+      <div class="right">
 
-        <table>
-        <thead>
-            <th colspan="2">Proday</th>
-        </thead>
-        <tbody>
-        <tr>
-        {% for stat, value in stats.proday.items %}
-            {% if value %}
-            <tr>
-                <td>{{ stat|statname:value }}</td>
-                <td>{{ value|formatvalue:stat }}</td>
-            </tr>
-            {% endif %}
-        {% endfor %}
-        </tbody>
-        </table>
-        <script>
-            document.addEventListener("DOMContentLoaded", function(event) { 
-                updateQuip({{ overall }});
-            });
-        </script>
-    </body>
+{% if stats.combine.invite == 'TRUE' %}
+{% for stat, value in stats.combine|order_stats:priorities|slice:"0:3" %}
+    {% if value and stat != 'invite' %}
+        <div class="stat">
+          <div class="header">
+              {{ stat|statname:value }} - Combine
+          </div>
+          <div class="number">
+              {{ value|formatvalue:stat }}
+          </div>
+        </div>
+    {% endif %}
+{% endfor %}
+{% endif %}
+
+{% if stats.proday.date != 'FALSE' %}
+{% for stat, value in stats.proday|order_stats:priorities|slice:"0:3" %}
+    {% if value and stat != 'date' %}
+        <div class="stat">
+          <div class="header">
+              {{ stat|statname:value }} - Proday
+          </div>
+          <div class="number">
+              {{ value|formatvalue:stat }}
+          </div>
+        </div>
+    {% endif %}
+{% endfor %}
+{% endif %}
+
+      </div>
+    </div>
+  </div>
+  {% comment "debug" %}
+  <pre>
+  {{ stats.combine|order_stats:priorities|pprint }}
+  {{ stats.proday|order_stats:priorities|pprint }}
+  </pre>
+  {% endcomment %}
+  <script src="{% static "draftcardposter/draft-2018/app.js" %}"></script>
+  <script src="{% static "draftcardposter/draft-2018/factoid.js" %}"></script>
+</body>
 </html>

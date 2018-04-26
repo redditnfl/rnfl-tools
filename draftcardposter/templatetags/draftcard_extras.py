@@ -4,6 +4,19 @@ from django.template.defaultfilters import stringfilter
 register = template.Library()
 
 @register.filter
+def order_stats(stats, priorities):
+    from pprint import pprint
+    items = list(stats.items())
+    prio = priorities.as_list()
+    def sorter(item):
+        ismissing = False if item[1] else True
+        if item[0] in prio:
+            return (ismissing, prio.index(item[0]))
+        else:
+            return (ismissing, 999)
+    return sorted(items, key=sorter)
+
+@register.filter
 @stringfilter
 def statname(statname, value):
     """
@@ -59,7 +72,7 @@ def formatvalue(value, statname):
 @register.filter
 def in_to_ft_in(value):
     feet, inches = divmod(int(value), 12)
-    return '{0}\' {1}"'.format(feet, inches)
+    return '{0}\'{1}"'.format(feet, inches)
 
 @register.filter 
 def teamcssclass(value):
