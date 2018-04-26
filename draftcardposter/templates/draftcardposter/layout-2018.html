@@ -1,0 +1,80 @@
+{% load static %}
+{% load draftcard_extras %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>{{ name }} /r/nfl draft card</title>
+        <style type="text/css">
+html, body {
+    width: 800px;
+    height: 1000px;
+}
+html {
+    padding: 10px;
+    margin: 10px;
+    background-color: gray;
+}
+body {
+    font-family: sans-serif;
+    background-color: #fafaea;
+    
+}
+img {
+    filter: hue-rotate(90deg) saturate(190%);
+}
+#quip {
+    font-size: smaller;
+    font-style: italic;
+    text-align: right;
+}
+        </style>
+        <script src="{% static "draftcardposter/draft-2018.js" %}"></script>
+    </head>
+    <body>
+        <h1>{{ firstname }} {{ lastname }}, {{ position }}, {{ college }}</h1>
+        <div id="quip"></div>
+        <img src="{% static photo %}" />
+        <ul>
+            <li><b>Weight</b>: {{ stats.weight_lbs|formatvalue:"weight_lbs" }}</li>
+            <li><b>Height</b>: {{ stats.height_in|formatvalue:"height_in" }}</li>
+        </ul>
+        <table>
+        <thead>
+            <th colspan="2">Combine</th>
+        </thead>
+        <tbody>
+        <tr>
+        {% for stat, value in stats.combine.items %}
+            {% if value %}
+            <tr>
+                <td>{{ stat|statname:value }}</td>
+                <td>{{ value|formatvalue:stat }}</td>
+            </tr>
+            {% endif %}
+        {% endfor %}
+        </tbody>
+        </table>
+
+        <table>
+        <thead>
+            <th colspan="2">Proday</th>
+        </thead>
+        <tbody>
+        <tr>
+        {% for stat, value in stats.proday.items %}
+            {% if value %}
+            <tr>
+                <td>{{ stat|statname:value }}</td>
+                <td>{{ value|formatvalue:stat }}</td>
+            </tr>
+            {% endif %}
+        {% endfor %}
+        </tbody>
+        </table>
+        <script>
+            document.addEventListener("DOMContentLoaded", function(event) { 
+                updateQuip({{ overall }});
+            });
+        </script>
+    </body>
+</html>
