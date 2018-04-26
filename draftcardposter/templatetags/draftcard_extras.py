@@ -10,11 +10,56 @@ def order_stats(stats, priorities):
     prio = priorities.as_list()
     def sorter(item):
         ismissing = False if item[1] else True
-        if item[0] in prio:
-            return (ismissing, prio.index(item[0]))
+        key = item[0]
+        if '.' in key:
+            key = item[0].split('.', 2)[1]
+        if key in prio:
+            return (ismissing, prio.index(key), item[0])
         else:
-            return (ismissing, 999)
+            return (ismissing, 999, item[0])
     return sorted(items, key=sorter)
+
+@register.filter
+def remove_non_stats(stats, priorities):
+    ret = []
+    for item in stats:
+        stat = item[0] if '.' not in item[0] else item[0].split('.', 2)[1]
+        value = item[1]
+        if value and stat in priorities.as_list():
+            ret.append(item)
+    return ret
+
+@register.filter
+def deduplicate(stats, priority):
+    priority = priority.split(',')
+    temp = {}
+    for item in stats:
+        if '.' in item[0]:
+            type_, stat = item[0].split('.', 2)
+        else:
+            stat = item[0]
+        if stat not in temp:
+            temp[stat] = []
+        temp[stat].append(item[0])
+
+    def sorter(item):
+        type_ = 'None' if '.' not in item else item.split('.')[0]
+        return priority.index(type_)
+
+    delete = []
+    for stat, items in temp.items():
+        if len(items) > 1:
+            delete += sorted(items, key=sorter)[1:]
+
+    ret = []
+    for item in stats:
+        if item[0] not in delete:
+            type_ = None if '.' not in item[0] else item[0].split('.')[0]
+            stat = item[0] if '.' not in item[0] else item[0].split('.')[1]
+            value = item[1]
+            ret.append([type_, stat, value])
+
+    return ret
 
 @register.filter
 @stringfilter

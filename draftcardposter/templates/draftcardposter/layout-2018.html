@@ -21,6 +21,11 @@
     </style>
   </head>
   <body class="{{ team|teamcssclass }} JS-card-contain" data-overall="{{ overall }}">
+    {% comment "debug" %}
+    <pre>
+    {{ p.data|order_stats:priorities|remove_non_stats:priorities|deduplicate:"combine,proday,None"|pprint }}
+    </pre>
+    {% endcomment %}
     <div class="draft-card-contain">
       <div class="photo">
         <div class="photo-contain JS-player-image" style="background-image: url({% static photo %});"></div>
@@ -37,35 +42,16 @@
         <div class="stats">
           <div class="stats-contain">
 
-{% if stats.combine.invite == 'TRUE' %}
-{% for stat, value in stats.combine|order_stats:priorities|slice:"0:3" %}
-    {% if value and stat != 'invite' %}
+            {% for type_, stat, value in p.data|order_stats:priorities|remove_non_stats:priorities|deduplicate:"combine,proday,None"|slice:"0:6" %}
             <div class="stat">
               <div class="header">
-                {{ stat|statname:value }} - Combine
+                {{ stat|statname:value }}{% if type_ %} - {{ type_ }}{% endif %}
               </div>
               <div class="number">
                 {{ value|formatvalue:stat }}
               </div>
             </div>
-    {% endif %}
-{% endfor %}
-{% endif %}
-
-{% if stats.proday.date != 'FALSE' %}
-{% for stat, value in stats.proday|order_stats:priorities|slice:"0:3" %}
-    {% if value and stat != 'date' %}
-            <div class="stat">
-              <div class="header">
-                {{ stat|statname:value }} - Proday
-              </div>
-              <div class="number">
-                {{ value|formatvalue:stat }}
-              </div>
-            </div>
-    {% endif %}
-{% endfor %}
-{% endif %}
+            {% endfor %}
 
           </div>
         </div>
