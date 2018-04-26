@@ -7,10 +7,15 @@
 {% if msg %}
 <div class="alert alert-success" role="alert">{{ msg }}</div>
 {% endif %}
-<table class="table table-hover table-condensed"><thead><th>Name</th><th>Filename</th></thead>
+<table class="table table-hover table-condensed"><thead><th>Name</th><th>Position</th><th>College</th><th>Filename</th></thead>
 {% for player in players %}
 <tbody>
-<tr><td>{{ player.name }}</td><td>{{ player.data.filename }}</td></tr>
+    <tr>
+        <td>{{ player.name }}</td>
+        <td>{{ player.position }}</td>
+        <td>{{ player.college }}</td>
+        <td>{{ player.data.filename }}</td>
+    </tr>
 </tbody>
 {% endfor %}
 </table>
