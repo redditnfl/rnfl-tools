@@ -18,7 +18,7 @@ function updateFactoid() {
       'Thinks Epic Rap Battles of History are authentic recordings.',
       'Sent a marriage proposal to the London Bridge, and was rejected.',
       'His wifi password is "thisismywifipasswordtherearemanylikeitbutthisoneismine"',
-      'Attended the release party for a CD titles, "Twelve Nights of Polka".',
+      'Attended the release party for a CD titled, "Twelve Nights of Polka".',
       'Brought a Lite Brite along for every road game of his college career.',
       'Deeply cares for the contestants on The Price is Right.',
       'Never found the Student Union building in college, even though he had a map.',
