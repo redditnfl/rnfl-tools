@@ -21,11 +21,6 @@
     </style>
   </head>
   <body class="{{ team|teamcssclass }} JS-card-contain" data-overall="{{ overall }}">
-    {% comment "debug" %}
-    <pre>
-    {{ p.data|order_stats:priorities|remove_non_stats:priorities|deduplicate:"combine,proday,None"|pprint }}
-    </pre>
-    {% endcomment %}
     <div class="draft-card-contain">
       <div class="photo">
         <div class="photo-contain JS-player-image" style="background-image: url({% static photo %});"></div>
@@ -38,10 +33,11 @@
       </div>
       <div class="basic-info">
           <div class="line"><span class="player_position left">{{ position }} &mdash; {{ college }}</span><span class="draft_position right">Round {{ round }}, pick {{ pick }}</span></div>
-        <div class="line"><span class="player_size left">{{ stats.height_in|formatvalue:'height_in' }} — {{ stats.weight_lbs|formatvalue:'weight_lbs' }}</span><span class="draft_team right">{{ team.fullname }}</span></div>
+          <div class="line"><span class="player_size left">{% if stats.height_in %}{{ stats.height_in|formatvalue:'height_in' }} — {{ stats.weight_lbs|formatvalue:'weight_lbs' }}{% endif %}</span><span class="draft_team right">{{ team.fullname }}</span></div>
         <div class="stats">
           <div class="stats-contain">
 
+            {% if p and p.data %}
             {% for type_, stat, value in p.data|order_stats:priorities|remove_non_stats:priorities|deduplicate:"combine,proday,None"|slice:"0:6" %}
             <div class="stat">
               <div class="header">
@@ -52,6 +48,7 @@
               </div>
             </div>
             {% endfor %}
+            {% endif %}
 
           </div>
         </div>

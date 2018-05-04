@@ -281,7 +281,7 @@ class PlayerCard(View):
             if misprint:
                 name = name.replace('MISPRINT ','')
             firstname, lastname = split_name(name)
-            stats = subdivide_stats(player.data)
+            stats = subdivide_stats(player.data) if player is not None else None
             round_, pick = draft.round_pick(2018, int(overall))
             context = {
                     'p': player,
