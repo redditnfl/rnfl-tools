@@ -60,7 +60,7 @@ function updateFactoid() {
       'He\'s just asking... ever seen Mr. Rogers and Red Skull at the same time?',
       'Has a tattoo of David Faustino over his heart with the words, "Yo quiero."',
       'Once spent the night sleeping in the back of a 2003 Dodge Durango.',
-      'Once attempted to pierce his eyebrown with a staple gun.',
+      'Once attempted to pierce his eyebrow with a staple gun.',
       'You know the movie Gremlins? Totally happened to him IRL.',
       'Player did not submit a fun fact because "they" already know.',
       'He wrote his own blurb for his card, but accidentally put it in Sam Darnold\'s.',
