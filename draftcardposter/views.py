@@ -52,7 +52,7 @@ class MissingPhotos(generic.TemplateView):
         context = super(MissingPhotos, self).get_context_data(*args, **kwargs)
         players = []
         for player in Player.objects.all():
-            photo = 'draftcardposter/draft-2018/playerimgs/' + player.data['filename'] + '.jpg'
+            photo = 'draftcardposter/top100-2018/playerimgs/' + player.data['filename'] + '.jpg'
             if not finders.find(photo):
                 players.append(player)
         context['players'] = players
@@ -71,7 +71,7 @@ class PlayerDetail(AJAXSingleObjectMixin, generic.DetailView):
     context_object_name = 'player'
 
 def remove_na(d):
-    dk = [k for k, v in d.items() if v.lower().strip() == 'n/a']
+    dk = [k for k, v in d.items() if v.lower().strip() in ('n/a', '--')]
     for k in dk:
         del(d[k])
     return d
@@ -301,7 +301,7 @@ class PlayerCard(View):
                     }
             context['photo'] = 'draftcardposter/draft-2018/playerimgs/some_fucking_guy.jpg'
             if player and 'filename' in player.data:
-                photo = 'draftcardposter/draft-2018/playerimgs/' + player.data['filename'] + '.jpg'
+                photo = 'draftcardposter/top100-2018/playerimgs/' + player.data['filename'] + '.jpg'
                 if finders.find(photo):
                     context['photo'] = photo
 

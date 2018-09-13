@@ -371,6 +371,11 @@ for team in list(mascots.keys()):
             'twitter': twitter[team],
             }
 
+def findteam(s):
+    for team in fullinfo.values():
+        if s in team.values():
+            return team
+
 if __name__ == '__main__':
     for short, info in fullinfo.items():
         print("{short:3}  {city:15}  {mascot}".format(**info))
