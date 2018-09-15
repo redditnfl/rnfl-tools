@@ -24,12 +24,13 @@ REQUIRED = [
         'nfltools==0.1.0.0',
         'reddittools==0.1.0.0',
         'nflapi==0.1.0.0',
+        'google-api-python-client>=1.7.4,<1.8',
+        'oauth2client>=4.1.3,<4.2',
 ]
 DEPENDENCY_LINKS = [
     'git+ssh://git@github.com/redditnfl/nfltools.git@a667047#egg=nfltools-0.1.0.0',
     'git+ssh://git@github.com/redditnfl/reddittools.git@d0568fb#egg=reddittools-0.1.0.0',
     'git+ssh://git@github.com/rasher/nflapi.git@f411d5e#egg=nflapi-0.1.0.0',
-    #'https://github.com/redditnfl/reddittools/tarball/master#egg=reddittools-0.1.0.0',
 ]
 
 # The rest you shouldn't have to touch too much :)
