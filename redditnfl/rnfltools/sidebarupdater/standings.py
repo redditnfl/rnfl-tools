@@ -19,7 +19,7 @@ def division_standings(teams):
             standings[div] = []
         standings[div].append((team, team.standings[0]))
     for div in standings:
-        standings[div].sort(key=lambda t: (t[1].divisionRank, t[0].fullName))
+        standings[div].sort(key=lambda t: (1-t[1].overallWinPct, t[1].divisionRank, t[0].fullName))
     return standings
 
 def record(standings):
