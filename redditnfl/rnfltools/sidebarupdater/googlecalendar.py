@@ -83,12 +83,14 @@ def run(reddit_session, **config):
             date = pendulum.parse(event['start']['dateTime']).in_timezone(tz)
             fmt = config.get('fmt_datetime', 'M/D h:mmA')
 
-        if 'description' in event and is_url(event['description']):
-            text = "[{0[summary]}]({0[description]})".format(event)
+        if 'location' in event and is_url(event['location']):
+            title = "[{0[summary]}]({0[location]})".format(event)
         else:
-            text = event['summary']
+            title = event['summary']
 
-        ret += config['row'].format(text=text, date=date, fmt=fmt)
+        desc = '*%s*' % event['description'].replace("\n", " ") if 'description' in event else ''
+
+        ret += config['row'].format(title=title, desc=desc, date=date, fmt=fmt)
 
     ret += config.get('footer', '')
     return ret
