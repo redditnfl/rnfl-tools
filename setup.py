@@ -21,16 +21,14 @@ AUTHOR = 'Jonas Häggqvist'
 
 # What packages are required for this module to be executed?
 REQUIRED = [
-        'nfltools==0.1.0.0',
-        'reddittools==0.1.0.0',
-        'nflapi==0.1.0.0',
         'google-api-python-client>=1.7.4,<1.8',
         'oauth2client>=4.1.3,<4.2',
+        'nfltools @ git+ssh://git@github.com/redditnfl/nfltools.git@e3b48de',
+        'reddittools @ git+ssh://git@github.com/redditnfl/reddittools.git@8048abc',
+        'nflapi @ git+ssh://git@github.com/rasher/nflapi.git@f411d5e',
+        'Jinja2>=2.10.3,<2.11',
 ]
 DEPENDENCY_LINKS = [
-    'git+ssh://git@github.com/redditnfl/nfltools.git@a667047#egg=nfltools-0.1.0.0',
-    'git+ssh://git@github.com/redditnfl/reddittools.git@d0568fb#egg=reddittools-0.1.0.0',
-    'git+ssh://git@github.com/rasher/nflapi.git@f411d5e#egg=nflapi-0.1.0.0',
 ]
 
 # The rest you shouldn't have to touch too much :)
@@ -102,6 +100,7 @@ setup(
     entry_points={
         'console_scripts': [
             #'nfl-schedule=redditnfl.nfltools.nflcom.schedule:main',
+            'pingrules=redditnfl.rnfltools.pingrules:main',
             ],
     },
     install_requires=REQUIRED,
