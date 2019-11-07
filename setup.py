@@ -27,6 +27,9 @@ REQUIRED = [
         'reddittools @ git+ssh://git@github.com/redditnfl/reddittools.git@8048abc',
         'nflapi @ git+ssh://git@github.com/rasher/nflapi.git@f411d5e',
         'Jinja2>=2.10.3,<2.11',
+        'progressbar2>=3.47.0,<4',
+        'html5lib>=1.0.1,<1.1',
+        'beautifulsoup4>=4.8.0,<5',
 ]
 DEPENDENCY_LINKS = [
 ]
@@ -101,6 +104,7 @@ setup(
         'console_scripts': [
             #'nfl-schedule=redditnfl.nfltools.nflcom.schedule:main',
             'pingrules=redditnfl.rnfltools.pingrules:main',
+            'vet=redditnfl.rnfltools.vet:main',
             ],
     },
     install_requires=REQUIRED,
