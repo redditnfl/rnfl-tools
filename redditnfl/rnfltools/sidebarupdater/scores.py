@@ -16,3 +16,10 @@ def run(reddit_session, **config):
         ret += config['row'].format(g=g, time=time, home=home, away=away)
 
     return ret + config['footer'] 
+
+if __name__ == "__main__":
+    print(run(None, **{
+        'header': '# {w.name} Schedule\n\nTime|Away||@||Home\n|:--|:--:|--:|:--:|:--|:--:|\n',
+        'row': '{time:%a %I:%M%p}|[*{away[short]}*]({away[subreddit]})|{g.visitorTeamScore.pointsTotal}|@|{g.homeTeamScore.pointsTotal}|[*{home[short]}*]({home[subreddit]})\n',
+        'footer': ''
+        }))

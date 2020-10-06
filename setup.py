@@ -23,7 +23,7 @@ AUTHOR = 'Jonas Häggqvist'
 REQUIRED = [
         'google-api-python-client>=1.7.4,<1.8',
         'oauth2client>=4.1.3,<4.2',
-        'nfltools @ git+ssh://git@github.com/redditnfl/nfltools.git@e3b48de',
+        'nfltools @ git+ssh://git@github.com/redditnfl/nfltools.git@44cbfd4',
         'reddittools @ git+ssh://git@github.com/redditnfl/reddittools.git@8048abc',
         'nflapi @ git+ssh://git@github.com/rasher/nflapi.git@f411d5e',
         'Jinja2>=2.10.3,<2.11',
