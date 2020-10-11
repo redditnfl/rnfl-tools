@@ -1,89 +1,106 @@
 from nflapi import NFL
+from nflapi.shield import shield, WeekOrderBy, OrderByDirection
 from redditnfl.nfltools.nflteams import get_team
-import requests
-import json
+
+from sgqlc.operation import Operation
 
 
-def division(abbr):
-    return ({'AC': 'AFC',
-             'NC': 'NFC'}[abbr[0:2]],
-            {'E': 'East',
-             'N': 'North',
-             'S': 'South',
-             'W': 'West'}[abbr[2]])
+def division(div):
+    return div[0:3], div[4:].title()
+
 
 def division_standings(teams):
     standings = {}
-    for team in teams:
-        if team.standings[0].divisionRank is None:
-            raise Exception('No rank in data. Aborting')
-        div = division(team.division.abbr)
+    for team, record in teams:
+        div = division(team.division)
         if div not in standings:
             standings[div] = []
-        standings[div].append((team, team.standings[0]))
+        standings[div].append((team, record))
+
     for div in standings:
-        standings[div].sort(key=lambda t: (1-t[1].overallWinPct, t[1].divisionRank, t[0].fullName))
+        standings[div].sort(key=lambda t: (1 - t[1].overall_pct, t[1].division_rank, t[0].full_name))
     return standings
 
-def record(standings):
-    ret = '{s.overallWins}-{s.overallLosses}'.format(s=standings)
-    if standings.overallTies:
-        ret += '-{s.overallTies}'.format(s=standings)
+
+def fmt_record(standings):
+    ret = '{s.overall_win}-{s.overall_loss}'.format(s=standings)
+    if standings.overall_tie:
+        ret += '-{s.overall_tie}'.format(s=standings)
     return ret
 
-def playoff_status(season):
-    url = 'http://www.nfl.com/static/content/playoff-picture/%d/playoff-picture.json' % season
-    resp = requests.get(url, headers={'User-Agent': 'nfl scores sidebar'})
-    status = json.loads(resp.text)
-    ret = {}
-    for conference in status['standings']:
-        for key in ['eliminated', 'hunt', 'wild', 'leaders']:
-            if 'team' not in conference[key]:
-                continue
-            teams = conference[key]['team']
-            if not isinstance(teams, list):
-                teams = [teams]
-            for team in teams:
-                if key == 'eliminated':
-                    team['leg'] += '\u2020'
-                if team['id'] == 'NO' and not team['leg']:
-                    team['leg'] = 'y'
-                ret[team['id']] = '^' + team['leg'] if team['leg'] else ''
-    return ret
+
+def fmt_playoffs(standings):
+    symbols = [
+        ("clinch_playoff", "x"),
+        ("clinch_division", "y"),
+        ("clinch_wc", "z"),
+        ("clinch_division_and_homefield", "*"),
+        ("eliminated_from_postseason", "†"),
+    ]
+    ret = ""
+    for attr, s in symbols:
+        if getattr(standings, attr, False):
+            ret += s
+    return "^" + ret if ret else ret
 
 
 def run(reddit_session, **config):
     nfl = NFL(ua='nfl scores sidebar')
     ret = config['header']
-    teams, week = nfl.standings.current()
 
+    op = Operation(shield.Viewer)
+    standings = op.viewer.teams_group.standings(first=1, week_season_value=0, order_by=WeekOrderBy.week__weekOrder,
+                                                order_by_direction=OrderByDirection.DESC)
+    standing = standings.edges.node
+    record = standing.team_records
+    record.team_id()
+    record.overall_win()
+    record.overall_loss()
+    record.overall_tie()
+    record.overall_pct()
+    record.division_rank()
+    record.clinch_playoff()
+    record.clinch_division()
+    record.clinch_wc()
+    record.clinch_division_and_homefield()
+    record.eliminated_from_postseason()
+
+    res = nfl.query(op)
+    records = res.viewer.teams_group.standings.edges[0].node.team_records
+    records = {r.team_id: r for r in records}
+
+    def team_fun(t: shield.Team):
+        t.id()
+        t.abbreviation()
+        t.division()
+        t.full_name()
+
+    teams = nfl.team.by_ids(records.keys(), select_fun=team_fun)
+    teams = [(t, records[t.id]) for t in teams]
     standings = division_standings(teams)
-    try:
-        playoffs = playoff_status(week.season)
-    except Exception as e:
-        playoffs = {}
 
     for conference in ('AFC', 'NFC'):
-        for left_division, right_division in (('North', 'South'),('East', 'West')):
+        for left_division, right_division in (('North', 'South'), ('East', 'West')):
             ret += "|{c}|{ld}|{c}|{rd}|\n".format(c=conference, ld=left_division, rd=right_division)
             ret += "|--:|:--|--:|:--|\n"
             for p in range(4):
                 lteam, lstandings = standings[(conference, left_division)][p]
                 rteam, rstandings = standings[(conference, right_division)][p]
-                lteam = get_team(lteam.abbr)
-                rteam = get_team(rteam.abbr)
+                lteam = get_team(lteam.abbreviation)
+                rteam = get_team(rteam.abbreviation)
                 ret += "|[*{lt}*]({lsr})|{lr}{lleg}|[*{rt}*]({rsr})|{rr}{rleg}|\n".format(
-                        lt=lteam['short'],
-                        lsr=lteam['subreddit'],
-                        lr=record(lstandings),
-                        lleg=playoffs.get(lteam['short'], ''),
-                        rt=rteam['short'],
-                        rsr=rteam['subreddit'],
-                        rr=record(rstandings),
-                        rleg=playoffs.get(rteam['short'], '')
-                        )
+                    lt=lteam['short'],
+                    lsr=lteam['subreddit'],
+                    lr=fmt_record(lstandings),
+                    lleg=fmt_playoffs(lstandings),
+                    rt=rteam['short'],
+                    rsr=rteam['subreddit'],
+                    rr=fmt_record(rstandings),
+                    rleg=fmt_playoffs(rstandings)
+                )
             ret += '\n'
-    return ret + config['footer'] 
+    return ret + config['footer']
+
 
 if __name__ == '__main__':
     print(run(None, header='', footer=''))
