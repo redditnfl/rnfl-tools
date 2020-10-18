@@ -162,7 +162,7 @@ class ThreadCreator:
 
         if 'filename' not in headers:
             raise Exception("No filename found in template " + template_name)
-        filename = headers['filename']
+        filename = self.args.output_dir / headers['filename']
         with open(filename, 'w') as fp:
             print("Saving %s" % filename)
             fp.write(output)
