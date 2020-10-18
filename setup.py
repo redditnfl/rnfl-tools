@@ -30,6 +30,7 @@ REQUIRED = [
         'progressbar2>=3.47.0,<4',
         'html5lib>=1.0.1,<1.1',
         'beautifulsoup4>=4.8.0,<5',
+        'pendulum>=2.1,<3',
 ]
 DEPENDENCY_LINKS = [
 ]
@@ -105,6 +106,7 @@ setup(
             #'nfl-schedule=redditnfl.nfltools.nflcom.schedule:main',
             'pingrules=redditnfl.rnfltools.pingrules:main',
             'vet=redditnfl.rnfltools.vet:main',
+            'createthreads=redditnfl.rnfltools.createthreads:main',
             ],
     },
     install_requires=REQUIRED,
