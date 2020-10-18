@@ -6,7 +6,6 @@ import re
 import sys
 import traceback
 from pathlib import Path
-from pprint import pprint
 from typing import List, Dict
 
 import jinja2
@@ -16,6 +15,7 @@ from nflapi.shield import Game, Week, WeekType, Team
 from pendulum import TUESDAY, WEDNESDAY, THURSDAY
 from praw import Reddit
 from redditnfl.nfltools import nflteams
+from redditnfl.reddittools.reddittoken import ensure_scopes
 
 NFL_TZ = pendulum.timezone("America/New_York")
 
@@ -60,7 +60,6 @@ class Filters:
 def games_on_day(day):
     def f(game):
         if not game.game_time:
-            print(game)
             return False
         kickoff = pendulum.instance(game.game_time).in_timezone(NFL_TZ)
         return day.date() == kickoff.date()
@@ -89,17 +88,20 @@ def date_string(s):
     except Exception as e:
         raise argparse.ArgumentTypeError(f"{s} could not be parsed as a date: " + str(e))
 
+
 class ThreadCreator:
     def __init__(self):
         parser = argparse.ArgumentParser(description="r/nfl thread scheduler")
         parser.add_argument('-s', '--site', dest='site', help="Reddit 'site' (praw.ini section) to use")
-        parser.add_argument('-d', '--date', dest='today', type=date_string, default=pendulum.today(), help="Date to generate threads for (default: today)")
+        parser.add_argument('-d', '--date', dest='today', type=date_string, default=pendulum.today(),
+                            help="Date to generate threads for (default: today)")
         parser.add_argument('sr_name', help="Name of subreddit to send notice to")
         parser.add_argument('template_dir', type=dir_path, help="Root directory for templates")
         parser.add_argument('output_dir', type=dir_path, help="Output directory")
 
         self.args = parser.parse_args()
         self.r = Reddit(self.args.site)
+        ensure_scopes(self.r, ['privatemessages'])
         self.sub = self.r.subreddit(self.args.sr_name)
 
         self.env = jinja2.Environment(loader=jinja2.loaders.FileSystemLoader(str(self.args.template_dir)),
@@ -126,7 +128,6 @@ class ThreadCreator:
 
         games_today = list(filter(games_on_day(today), week_games))
         for game in games_today:
-            print(game.game_time)
             game.game_time = pendulum.instance(game.game_time).in_timezone(NFL_TZ)
         start_times = find_start_times(games_today)
 
@@ -170,7 +171,6 @@ class ThreadCreator:
 
     def send_modmail(self):
         if len(self.scheduled) > 0:
-            pprint(self.scheduled)
             tpl = self.env.get_template('modmail.md')
             message = tpl.render(scheduled=self.scheduled, pendulum=pendulum)
             self.sub.message("Scheduled posts for today", message)
@@ -179,7 +179,7 @@ class ThreadCreator:
         for user in users:
             subject = "Error scheduling threads!"
             tb = "".join(traceback.format_exception(*exc_info))
-            indented = "\n".join(["    "+l for l in tb.splitlines()])
+            indented = "\n".join(["    " + l for l in tb.splitlines()])
             message = "Exception when generating threads:\n\n" + indented
             self.r.redditor(user).message(subject, message)
 
