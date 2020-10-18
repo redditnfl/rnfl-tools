@@ -27,7 +27,7 @@ def run(reddit_session, **config):
 
     nfl = NFL(ua='nfl scores sidebar')
     cw = nfl.schedule.current_week()
-    games = nfl.game.week_games()
+    games = nfl.game.week_games(cw.week_value, cw.season_type, cw.season_value)
 
     ids = [game.game_detail_id for game in games if hasattr(game, 'game_detail_id') and game.game_detail_id]
     op = Operation(shield.Viewer)
