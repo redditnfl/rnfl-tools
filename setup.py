@@ -24,7 +24,7 @@ REQUIRED = [
         'google-api-python-client>=1.7.4,<1.8',
         'oauth2client>=4.1.3,<4.2',
         'nfltools @ git+ssh://git@github.com/redditnfl/nfltools.git@44cbfd4',
-        'reddittools @ git+ssh://git@github.com/redditnfl/reddittools.git@8048abc',
+        'reddittools @ git+ssh://git@github.com/redditnfl/reddittools.git@68e25fc',
         'nflapi @ git+ssh://git@github.com/rasher/nflapi.git@3ca9128',
         'Jinja2>=2.10.3,<2.11',
         'progressbar2>=3.47.0,<4',
