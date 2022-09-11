@@ -47,9 +47,10 @@ def fmt_playoffs(standings):
 def run(reddit_session, **config):
     nfl = NFL(ua='nfl scores sidebar')
     ret = config['header']
+    week = nfl.schedule.current_week()
 
     op = Operation(shield.Viewer)
-    standings = op.viewer.teams_group.standings(first=1, week_season_value=0, order_by=WeekOrderBy.week__weekOrder,
+    standings = op.viewer.teams_group.standings(first=1, week_season_value=week.season_value, week_week_value=week.week_value, week_season_type=week.season_type, order_by=WeekOrderBy.week__weekOrder,
                                                 order_by_direction=OrderByDirection.DESC)
     standing = standings.edges.node
     record = standing.team_records
@@ -66,6 +67,8 @@ def run(reddit_session, **config):
     record.eliminated_from_postseason()
 
     res = nfl.query(op)
+    if len(res.viewer.teams_group.standings.edges) == 0:
+        return ''
     records = res.viewer.teams_group.standings.edges[0].node.team_records
     records = {r.team_id: r for r in records}
 

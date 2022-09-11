@@ -3,11 +3,14 @@ from collections import namedtuple
 import pendulum
 from nflapi import NFL
 from nflapi.shield import shield, WeekType
-from redditnfl.nfltools.nflteams import get_team
+from redditnfl.nfltools.nflteams import fullinfo, fullnames
 from sgqlc.operation import Operation
 
 dgd = namedtuple('DefaultGameDetails', ['home_points_total', 'visitor_points_total'])
 
+def get_team(full_name):
+    abbr = list(fullnames.keys())[list(fullnames.values()).index(full_name)]
+    return fullinfo[abbr]
 
 def week_name(cw):
     return {
@@ -29,20 +32,20 @@ def run(reddit_session, **config):
     cw = nfl.schedule.current_week()
     games = nfl.game.week_games(cw.week_value, cw.season_type, cw.season_value)
 
-    ids = [game.game_detail_id for game in games if hasattr(game, 'game_detail_id') and game.game_detail_id]
+    ids = {next((x.id for x in game.external_ids if x.source == "gamedetail"), None): game.id for game in games if hasattr(game, 'id') and pendulum.parse(game.time) < pendulum.now()}
     op = Operation(shield.Viewer)
-    gd = op.viewer.league.game_details_by_ids(ids=ids)
+    gd = op.viewer.league.game_details_by_ids(ids=ids.keys())
     gd.__fields__('id', 'home_points_total', 'visitor_points_total')
     details = nfl.query(op).viewer.league.game_details_by_ids
-    details = {gd.id: gd for gd in details}
+    details = {ids[gd.id]: gd for gd in details if hasattr(gd, 'id')}
 
     ret = config['header'].format(w=cw, wn=week_name(cw))
     tz = pendulum.timezone(config.get('tz', 'US/Eastern'))
     for g in games:
-        home = get_team(g.home_team.abbreviation)
-        away = get_team(g.away_team.abbreviation)
-        time = g.game_time.astimezone(tz)
-        gd = details.get(g.game_detail_id, default_gd)
+        home = get_team(g.home_team.full_name)
+        away = get_team(g.away_team.full_name)
+        time = pendulum.parse(g.time).astimezone(tz)
+        gd = details.get(g.id, default_gd)
         ret += config['row'].format(g=g, gd=gd, time=time, home=home, away=away)
 
     return ret + config['footer']
