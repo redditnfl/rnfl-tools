@@ -50,7 +50,10 @@ class Filters:
 
     @staticmethod
     def team_sr(team: Team) -> str:
-        info = nflteams.get_team(team.abbreviation)
+        info = None
+        for abbr, this_team in nflteams.fullinfo.items():
+            if this_team['fullname'] == team.full_name:
+                info = this_team
         if info:
             return info.get('subreddit', 'nfl')
         else:
@@ -59,9 +62,9 @@ class Filters:
 
 def games_on_day(day):
     def f(game):
-        if not game.game_time:
+        if not game.time:
             return False
-        kickoff = pendulum.instance(game.game_time).in_timezone(NFL_TZ)
+        kickoff = pendulum.parse(game.time).in_timezone(NFL_TZ)
         return day.date() == kickoff.date()
 
     return f
@@ -70,7 +73,7 @@ def games_on_day(day):
 def find_start_times(games: List[Game]) -> Dict:
     start_times = {}
     for game in games:
-        start_times[game.game_time] = 1 + start_times.get(game.game_time, 0)
+        start_times[game.time] = 1 + start_times.get(game.time, 0)
     return start_times
 
 
@@ -116,19 +119,27 @@ class ThreadCreator:
 
         nfl = NFL('rnfl thread creator')
         current_week = nfl.schedule.current_week()
+        print("Current week is {}".format(current_week))
         hour = datetime.timedelta(hours=1)
 
         week_games = nfl.game.week_games(week=current_week.week_value, season_type=current_week.season_type,
                                          season=current_week.season_value)
+        print("%d game(s) this week" % len(week_games))
 
         if len(week_games) > 0:
             for tpl, should_post, ctx in RECURRING_THREADS:
                 if should_post(today):
                     self.schedule(tpl, today=today, cw=current_week, hours=hour, **ctx)
 
-        games_today = list(filter(games_on_day(today), week_games))
+        gf = filter(games_on_day(today), week_games)
+        games_today = list(gf)
+        print("Games today: %d" % len(games_today))
         for game in games_today:
-            game.game_time = pendulum.instance(game.game_time).in_timezone(NFL_TZ)
+            game.time = pendulum.parse(game.time).in_timezone(NFL_TZ)
+            for id_ in game.external_ids:
+                if id_.source == 'slug':
+                    game.slug = id_.id
+ 
         start_times = find_start_times(games_today)
 
         if len(games_today) > 0:
@@ -138,9 +149,11 @@ class ThreadCreator:
         # Is there a time when 3 or more games start?
         # If so, create a highlights thread and comments starting from the first kickoff of the day
         # Also create a redzone thread
+        num_games_today = len(games_today)
+        max_simul_kickoffs = max(start_times.values())
         if len(games_today) > 0 and max(start_times.values()) >= 3:
-            first_kickoff = sorted(games_today, key=lambda g: g.game_time)[0].game_time
-            first_kickoff = pendulum.instance(first_kickoff).in_timezone(NFL_TZ)
+            first_kickoff = sorted(games_today, key=lambda g: g.time)[0].time
+            first_kickoff = first_kickoff.in_timezone(NFL_TZ)
 
             print("Need redzone")
             self.schedule('redzone.post', cw=current_week, first_kickoff=first_kickoff, hours=hour, today=today)
@@ -192,6 +205,7 @@ def main():
     except Exception as e:
         exc_info = sys.exc_info()
         tc.send_error(exc_info, 'rasherdk')
+        traceback.print_exc()
 
 
 if __name__ == '__main__':
