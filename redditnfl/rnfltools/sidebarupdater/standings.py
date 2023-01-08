@@ -29,12 +29,14 @@ def fmt_record(standings):
 
 
 def fmt_playoffs(standings):
+    # {'bye': False, 'division': False, 'eliminated': False, 'homeField': False, 'playoff': False, 'wildCard': False}
     symbols = [
         ("playoff", "x"),
-        ("division", "y"),
-        ("wild_card", "z"),
+        ("division", "z"),
+        ("wild_card", "y"),
         ("home_field", "*"),
         ("eliminated", "†"),
+        ("bye", "w"),
     ]
     ret = ""
     for attr, s in symbols:
